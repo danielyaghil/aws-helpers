@@ -1,7 +1,4 @@
-const {
-    SecretsManagerClient,
-    GetSecretValueCommand
-} = require('@aws-sdk/client-secrets-manager');
+const { SecretsManagerClient, GetSecretValueCommand } = require('@aws-sdk/client-secrets-manager');
 
 class AWSSecret {
     #secretClient = null;
@@ -32,9 +29,7 @@ class AWSSecret {
 
     #setIntoCache(secretId, value) {
         if (typeof secretId != 'string' || typeof value != 'string') {
-            console.error(
-                `Trying to set cache with non string values [${secretId}] : [${value}]`
-            );
+            console.error(`Trying to set cache with non string values [${secretId}] : [${value}]`);
             return;
         }
 
@@ -73,9 +68,7 @@ class AWSSecret {
         data = await this.#applyCommand(cmd);
 
         if (!data) {
-            console.error(
-                `Secret: could not retrieve ${secretId} in region ${process.env.AWS_REGION}`
-            );
+            console.error(`Secret: could not retrieve ${secretId} in region ${process.env.AWS_REGION}`);
             return null;
         }
 
