@@ -3,6 +3,13 @@ name: NPM-publish
 on:
     workflow_dispatch:
 
+    push:
+        branches:
+            - 'main'
+        paths:
+            - '**.js'
+            - package.json
+
 jobs:
     publish:
         runs-on: ubuntu-latest
