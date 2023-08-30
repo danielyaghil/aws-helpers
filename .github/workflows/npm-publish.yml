@@ -24,4 +24,5 @@ jobs:
               with:
                   token: ${{ secrets.NPM_TOKEN }}
                   access: public
-                  greater-version-only: true
+                  package: src/package.json
+                  check-version: true
