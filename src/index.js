@@ -1,8 +1,8 @@
 // index.js
-const AWSSecrets = require('./src/aws-secrets');
-const AWSS3 = require('./src/aws-s3');
-const AWSDynamo = require('./src/aws-dynamo-db');
-const AWSCognito = require('./src/aws-cognito');
+const AWSSecrets = require('./helpers/aws-secrets');
+const AWSS3 = require('./helpers/aws-s3');
+const AWSDynamo = require('./helpers/aws-dynamo-db');
+const AWSCognito = require('./helpers/aws-cognito');
 
 module.exports.SecretsClient = AWSSecrets;
 module.exports.S3Client = AWSS3;

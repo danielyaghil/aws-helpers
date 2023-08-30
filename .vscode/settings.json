@@ -1,8 +1,15 @@
 {
-    "cSpell.words": ["applitest", "AWSS", "Dotenv", "middlewares", "pocos"],
-    "editor.defaultFormatter": "esbenp.prettier-vscode",
-    "editor.formatOnSave": true,
-    "editor.quickSuggestions": {
-        "comments": true
-    }
+  "cSpell.words": [
+    "applitest",
+    "AWSS",
+    "danielyaghil",
+    "Dotenv",
+    "middlewares",
+    "pocos"
+  ],
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.formatOnSave": true,
+  "editor.quickSuggestions": {
+    "comments": true
+  }
 }
