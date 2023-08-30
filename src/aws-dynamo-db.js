@@ -27,9 +27,9 @@ class DB {
     #dynamoDbClient = null;
     #dynamoDbDocumentClient = null;
 
-    constructor() {
+    constructor(region) {
         this.#dynamoDbClient = new DynamoDBClient({
-            region: process.env.AWS_REGION
+            region: region ?? process.env.AWS_REGION
         });
 
         const marshallOptions = {
@@ -51,9 +51,9 @@ class DB {
         this.#dynamoDbDocumentClient = DynamoDBDocumentClient.from(this.#dynamoDbClient, translateConfig);
     }
 
-    static instance() {
+    static instance(region) {
         if (!DB.singleton) {
-            DB.singleton = Object.freeze(new DB());
+            DB.singleton = Object.freeze(new DB(region));
         }
 
         return DB.singleton;

@@ -1,4 +1,5 @@
 const { S3Client, GetObjectCommand, PutObjectCommand, DeleteObjectCommand } = require('@aws-sdk/client-s3');
+const mime = require('mime');
 
 class AWSS3 {
     #s3Client = null;
@@ -27,12 +28,21 @@ class AWSS3 {
             return null;
         } catch (error) {
             // error handling.
-            console.error(error);
+            console.debug(error);
         }
         return null;
     }
 
-    async get(bucket, key) {
+    async #streamToString(stream) {
+        return await new Promise((resolve, reject) => {
+            const chunks = [];
+            stream.on('data', (chunk) => chunks.push(chunk));
+            stream.on('error', reject);
+            stream.on('end', () => resolve(Buffer.concat(chunks).toString('utf8')));
+        });
+    }
+
+    async get(bucket, key, outputType = 'stream') {
         const params = {
             Bucket: bucket,
             Key: key
@@ -40,13 +50,23 @@ class AWSS3 {
 
         const cmd = new GetObjectCommand(params);
         let data = await this.#applyCommand(cmd);
-        if (data && data.$metadata.httpStatusCode == 200) {
-            return data;
+        if (data && data.$metadata.httpStatusCode == 200 && data.Body) {
+            if (outputType == 'txt') {
+                return await this.#streamToString(data.Body);
+            } else {
+                return data.Body;
+            }
         }
         return null;
     }
 
-    async put(bucket, key, acl, contentType, stream) {
+    //ACL= "private" || "public-read" || "public-read-write" || "authenticated-read" || "aws-exec-read" || "bucket-owner-read" || "bucket-owner-full-control"
+    async put(bucket, key, acl, stream) {
+        const contentType = mime.getType(key);
+        if (!contentType) {
+            throw new Error('Content type could not be determined from key');
+        }
+
         const params = {
             Bucket: bucket,
             Key: key,

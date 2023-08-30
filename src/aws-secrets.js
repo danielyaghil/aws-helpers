@@ -11,9 +11,9 @@ class AWSSecret {
         this.#cache = {};
     }
 
-    static instance() {
+    static instance(region) {
         if (!AWSSecret.singleton) {
-            AWSSecret.singleton = Object.freeze(new AWSSecret());
+            AWSSecret.singleton = Object.freeze(new AWSSecret(region));
         }
 
         return AWSSecret.singleton;

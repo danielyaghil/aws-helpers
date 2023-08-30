@@ -1,12 +1,10 @@
 // index.js
-const AWSSecrets = require('./helpers/aws-secrets');
-const AWSS3 = require('./helpers/aws-s3');
-const AWSDynamo = require('./helpers/aws-dynamo');
-const AWSCognito = require('./helpers/aws-cognito');
-const AWSRedis = require('./helpers/aws-redis');
+const AWSSecrets = require('./src/aws-secrets');
+const AWSS3 = require('./src/aws-s3');
+const AWSDynamo = require('./src/aws-dynamo-db');
+const AWSCognito = require('./src/aws-cognito');
 
-module.exports.AWSSecrets = AWSSecrets;
-module.exports.AWSS3 = AWSS3;
-module.exports.AWSDynamo = AWSDynamo;
-module.exports.AWSCognito = AWSCognito;
-module.exports.AWSRedis = AWSRedis;
+module.exports.SecretsClient = AWSSecrets;
+module.exports.S3Client = AWSS3;
+module.exports.DynamoDbClient = AWSDynamo;
+module.exports.CognitoClient = AWSCognito;
