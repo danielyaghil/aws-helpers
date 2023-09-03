@@ -17,9 +17,9 @@ The library uses the AWS SDK v3, so you can use any of the authorization methods
 
 For example, you can simply define in your environment the following variables:
 
-- AWS_ACCESS_KEY_ID
-- AWS_SECRET_ACCESS_KEY
-- AWS_REGION
+-   AWS_ACCESS_KEY_ID
+-   AWS_SECRET_ACCESS_KEY
+-   AWS_REGION
 
 ### Singleton pattern
 
