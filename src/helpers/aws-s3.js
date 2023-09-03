@@ -1,36 +1,14 @@
 const { S3Client, GetObjectCommand, PutObjectCommand, DeleteObjectCommand } = require('@aws-sdk/client-s3');
 const mime = require('mime');
+const AWSBase = require('./aws-base');
 
-class AWSS3 {
-    #s3Client = null;
-
+class AWSS3 extends AWSBase {
     constructor(region) {
-        this.#s3Client = new S3Client({
-            region: region ?? process.env.AWS_REGION
-        });
+        super(S3Client, region);
     }
 
     static instance(region) {
-        if (!AWSS3.singleton) {
-            AWSS3.singleton = Object.freeze(new AWSS3(region));
-        }
-
-        return AWSS3.singleton;
-    }
-
-    async #applyCommand(command) {
-        try {
-            const data = await this.#s3Client.send(command);
-            if (data) {
-                return data;
-            }
-
-            return null;
-        } catch (error) {
-            // error handling.
-            console.debug(error);
-        }
-        return null;
+        return super.instance(AWSS3, region);
     }
 
     async #streamToString(stream) {
@@ -49,7 +27,7 @@ class AWSS3 {
         };
 
         const cmd = new GetObjectCommand(params);
-        let data = await this.#applyCommand(cmd);
+        let data = await this.applyCommand(cmd);
         if (data && data.$metadata.httpStatusCode == 200 && data.Body) {
             if (outputType == 'txt') {
                 return await this.#streamToString(data.Body);
@@ -76,7 +54,7 @@ class AWSS3 {
         };
 
         const cmd = new PutObjectCommand(params);
-        let data = await this.#applyCommand(cmd);
+        let data = await this.applyCommand(cmd);
         if (data && data.$metadata.httpStatusCode == 200) {
             return true;
         }
@@ -90,7 +68,7 @@ class AWSS3 {
         };
 
         const cmd = new DeleteObjectCommand(params);
-        let data = await this.#applyCommand(cmd);
+        let data = await this.applyCommand(cmd);
         if (data && data.$metadata.httpStatusCode == 204) {
             return true;
         }

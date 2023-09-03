@@ -1,22 +1,16 @@
 const { SecretsManagerClient, GetSecretValueCommand } = require('@aws-sdk/client-secrets-manager');
+const AWSBase = require('./aws-base');
 
-class AWSSecret {
-    #secretClient = null;
+class AWSSecret extends AWSBase {
     #cache = null;
 
-    constructor() {
-        this.#secretClient = new SecretsManagerClient({
-            region: process.env.AWS_REGION
-        });
+    constructor(region) {
+        super(SecretsManagerClient, region);
         this.#cache = {};
     }
 
     static instance(region) {
-        if (!AWSSecret.singleton) {
-            AWSSecret.singleton = Object.freeze(new AWSSecret(region));
-        }
-
-        return AWSSecret.singleton;
+        super.instance(AWSSecret, region);
     }
 
     #getFromCache(secretId) {
@@ -40,16 +34,9 @@ class AWSSecret {
         this.#cache[secretId] = value;
     }
 
-    async #applyCommand(command) {
-        try {
-            const data = await this.#secretClient.send(command);
-            if (data && data.SecretString) {
-                return data.SecretString;
-            }
-            return null;
-        } catch (error) {
-            // error handling.
-            console.log(error);
+    async processData(data) {
+        if (data && data.SecretString) {
+            return data.SecretString;
         }
         return null;
     }
@@ -65,7 +52,7 @@ class AWSSecret {
         };
 
         const cmd = new GetSecretValueCommand(params);
-        data = await this.#applyCommand(cmd);
+        data = await this.applyCommand(cmd);
 
         if (!data) {
             console.error(`Secret: could not retrieve ${secretId} in region ${process.env.AWS_REGION}`);

@@ -3,22 +3,17 @@ const {
     ListUsersInGroupCommand,
     AdminListGroupsForUserCommand
 } = require('@aws-sdk/client-cognito-identity-provider');
+const AWSBase = require('./aws-base');
 
-class AWSCognito {
-    #cognitoClient = null;
+class AWSCognito extends AWSBase {
+    client = null;
 
-    constructor() {
-        this.#cognitoClient = new CognitoIdentityProviderClient({
-            region: process.env.AWS_REGION
-        });
+    constructor(region) {
+        super(CognitoIdentityProviderClient, region);
     }
 
-    static instance() {
-        if (!AWSCognito.singleton) {
-            AWSCognito.singleton = Object.freeze(new AWSCognito());
-        }
-
-        return AWSCognito.singleton;
+    static instance(region) {
+        return super.instance(AWSCognito, region);
     }
 
     async #addGroupsToUsers(userPoolId, user) {
@@ -28,7 +23,7 @@ class AWSCognito {
                 Username: user.Username
             };
             const command = new AdminListGroupsForUserCommand(input);
-            const response = await this.#cognitoClient.send(command);
+            const response = await this.client.send(command);
             user.Groups = response.Groups;
         } catch (error) {
             console.debug(error);
@@ -42,7 +37,7 @@ class AWSCognito {
                 GroupName: groupName
             };
             const command = new ListUsersInGroupCommand(input);
-            const response = await this.#cognitoClient.send(command);
+            const response = await this.applyCommand(command);
 
             const users = response.Users;
             if (users && users.length) {
