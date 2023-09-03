@@ -3,9 +3,11 @@
     "applitest",
     "AWSS",
     "danielyaghil",
+    "danieyaghil",
     "Dotenv",
     "middlewares",
-    "pocos"
+    "pocos",
+    "unmarshall"
   ],
   "editor.defaultFormatter": "esbenp.prettier-vscode",
   "editor.formatOnSave": true,

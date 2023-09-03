@@ -7,7 +7,7 @@ It encapsulates AWS Javascript SDK v3 (https://docs.aws.amazon.com/AWSJavaScript
 
 ## Installation
 
-npm install @danielyaghil/aws-helpers
+npm install @danieyaghil/aws-helpers
 
 ## Usage
 

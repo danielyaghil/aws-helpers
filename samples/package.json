@@ -1,0 +1,25 @@
+{
+  "name": "aws-helpers-sample",
+  "version": "0.9.0",
+  "description": "Samples files for AWS helpers",
+  "main": "s3.js",
+  "scripts": {
+    "test": "echo TBD"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/danielyaghil/aws-helpers.git#main"
+  },
+  "keywords": [
+    "samples"
+  ],
+  "author": "Daniel Yaghil",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/danielyaghil/aws-helpers/issues"
+  },
+  "homepage": "https://github.com/danielyaghil/aws-helpers/tree/main#readme",
+  "dependencies": {
+    "@danielyaghil/aws-helpers": "^0.9.4"
+  }
+}

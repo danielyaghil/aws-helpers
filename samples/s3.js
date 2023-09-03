@@ -1,4 +1,4 @@
-const { S3Client } = require('../index');
+const { S3Client } = require('@danielyaghil/aws-helpers');
 
 async function main() {
     const s3Client = S3Client.instance();
