@@ -9,6 +9,8 @@ on:
         paths:
             - 'src/**.js'
             - src/package.json
+            - src/package-lock.json
+            - src/README.rnd
 defaults:
     run:
         working-directory: src
@@ -41,7 +43,7 @@ jobs:
 
             - name: Test app
               run: npm run test
-    
+
     publish:
         runs-on: ubuntu-latest
         steps:
