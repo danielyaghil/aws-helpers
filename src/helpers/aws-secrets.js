@@ -10,7 +10,7 @@ class AWSSecret extends AWSBase {
     }
 
     static instance(region) {
-        super.instance(AWSSecret, region);
+        return super.instance(AWSSecret, region);
     }
 
     #getFromCache(secretId) {

@@ -230,7 +230,7 @@ class DB {
 
     //#region queries
 
-    async scanAll(tableName, filter, filterParams) {
+    async scanAll(tableName, filter, filterParams, index) {
         if (!tableName) {
             console.log(`DB:scanAll - missing tableName`);
             return null;
@@ -247,6 +247,9 @@ class DB {
         if (filter) {
             params.FilterExpression = filter;
             params.ExpressionAttributeValues = filterParams;
+        }
+        if (index) {
+            params.IndexName = index;
         }
 
         const command = new ScanCommand(params);
