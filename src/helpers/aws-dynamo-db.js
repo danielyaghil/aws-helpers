@@ -84,9 +84,13 @@ class DB {
                 return new DbCommandResult(true, data);
             }
         } catch (err) {
-            console.log(err);
+            if (err.name == 'ResourceNotFoundException') {
+                return new DbCommandResult(true, null);
+            } else {
+                console.log(err);
+                return new DbCommandResult(false, null);
+            }
         }
-        return new DbCommandResult(false, null);
     }
 
     //#region table management
@@ -255,7 +259,11 @@ class DB {
         const command = new ScanCommand(params);
         let result = await this.#applyDocumentCommand(command);
         if (result.success) {
-            return result.data.Items;
+            if (result.data.Items) {
+                return result.data.Items;
+            } else {
+                return [];
+            }
         }
         return null;
     }
@@ -279,7 +287,11 @@ class DB {
         const command = new ExecuteStatementCommand(params);
         let result = await this.#applyDocumentCommand(command);
         if (result.success) {
-            return result.data.Items;
+            if (result.data.Items) {
+                return result.data.Items;
+            } else {
+                return [];
+            }
         }
         return null;
     }
