@@ -206,7 +206,7 @@ class DB {
 
         const command = new GetCommand(params);
         let result = await this.#applyDocumentCommand(command);
-        if (result.success && result.data.Item) {
+        if (result.success && result.data && result.data.Item) {
             return result.data.Item;
         }
         return null;
@@ -259,7 +259,7 @@ class DB {
         const command = new ScanCommand(params);
         let result = await this.#applyDocumentCommand(command);
         if (result.success) {
-            if (result.data.Items) {
+            if (result.data && result.data.Items) {
                 return result.data.Items;
             } else {
                 return [];
@@ -287,7 +287,7 @@ class DB {
         const command = new ExecuteStatementCommand(params);
         let result = await this.#applyDocumentCommand(command);
         if (result.success) {
-            if (result.data.Items) {
+            if (result.data && result.data.Items) {
                 return result.data.Items;
             } else {
                 return [];
