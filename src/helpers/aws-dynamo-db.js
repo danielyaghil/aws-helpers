@@ -10,7 +10,8 @@ const {
     GetCommand,
     DeleteCommand,
     ScanCommand,
-    ExecuteStatementCommand
+    ExecuteStatementCommand,
+    QueryCommand
 } = require('@aws-sdk/lib-dynamodb');
 
 class DbCommandResult {
@@ -234,14 +235,57 @@ class DB {
 
     //#region queries
 
-    async scanAll(tableName, filter, filterParams, index) {
+    async query(tableName, keyFilter, additionalFilter, filterParams, index) {
         if (!tableName) {
-            console.log(`DB:scanAll - missing tableName`);
+            console.log(`DB:Query - missing tableName`);
+            return null;
+        }
+
+        if (!keyFilter) {
+            console.log(`DB:Query - missing keyFilter`);
+        }
+
+        if (!filterParams) {
+            console.log(`DB:Query - missing filterParams`);
+        }
+
+        if (!this.existTable(tableName)) {
+            console.log(`DB:Query table [${tableName}] does not exist`);
+            return null;
+        }
+
+        let params = {
+            TableName: tableName,
+            KeyConditionExpression: keyFilter,
+            ExpressionAttributeValues: filterParams
+        };
+        if (additionalFilter) {
+            params.FilterExpression = additionalFilter;
+        }
+        if (index) {
+            params.IndexName = index;
+        }
+
+        const command = new QueryCommand(params);
+        let result = await this.#applyDocumentCommand(command);
+        if (result.success) {
+            if (result.data && result.data.Items) {
+                return result.data.Items;
+            } else {
+                return [];
+            }
+        }
+        return null;
+    }
+
+    async scan(tableName, filter, filterParams, index) {
+        if (!tableName) {
+            console.log(`DB:Scan - missing tableName`);
             return null;
         }
 
         if (!this.existTable(tableName)) {
-            console.log(`DB:ScanAll table [${tableName}] does not exist`);
+            console.log(`DB:Scan table [${tableName}] does not exist`);
             return null;
         }
 
