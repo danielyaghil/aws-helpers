@@ -1,7 +1,8 @@
 const {
     CognitoIdentityProviderClient,
     ListUsersInGroupCommand,
-    AdminListGroupsForUserCommand
+    AdminListGroupsForUserCommand,
+    ListGroupsCommand
 } = require('@aws-sdk/client-cognito-identity-provider');
 const AWSBase = require('./aws-base');
 
@@ -48,6 +49,21 @@ class AWSCognito extends AWSBase {
             }
 
             return users;
+        } catch (error) {
+            console.debug(error);
+            return [];
+        }
+    }
+
+    async getAllGroups(userPoolId) {
+        try {
+            const input = {
+                UserPoolId: userPoolId
+            };
+            const command = new ListGroupsCommand(input);
+            const response = await this.applyCommand(command);
+            const groups = response?.Groups.map((group) => group.GroupName);
+            return groups;
         } catch (error) {
             console.debug(error);
             return [];
