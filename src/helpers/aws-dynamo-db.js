@@ -235,7 +235,7 @@ class DB {
 
     //#region queries
 
-    async query(tableName, keyFilter, additionalFilter, filterParams, index) {
+    async query(tableName, keyFilter, additionalFilter, filterParams, sort, index) {
         if (!tableName) {
             console.log(`DB:Query - missing tableName`);
             return null;
@@ -264,6 +264,9 @@ class DB {
         }
         if (index) {
             params.IndexName = index;
+        }
+        if (sort == 'desc') {
+            params.ScanIndexForward = false;
         }
 
         const command = new QueryCommand(params);
