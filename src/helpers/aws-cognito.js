@@ -62,8 +62,11 @@ class AWSCognito extends AWSBase {
             };
             const command = new ListGroupsCommand(input);
             const response = await this.applyCommand(command);
-            const groups = response?.Groups.map((group) => group.GroupName);
-            return groups;
+            if (response && response.Groups) {
+                return response.Groups;
+            } else {
+                return [];
+            }
         } catch (error) {
             console.debug(error);
             return [];
