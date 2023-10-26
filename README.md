@@ -7,7 +7,9 @@ It encapsulates AWS Javascript SDK v3 (https://docs.aws.amazon.com/AWSJavaScript
 
 ## Installation
 
+```cli
 npm install @danieyaghil/aws-helpers
+```
 
 ## Usage
 
@@ -17,9 +19,9 @@ The library uses the AWS SDK v3, so you can use any of the authorization methods
 
 For example, you can simply define in your environment the following variables:
 
--   AWS_ACCESS_KEY_ID
--   AWS_SECRET_ACCESS_KEY
--   AWS_REGION
+- AWS_ACCESS_KEY_ID
+- AWS_SECRET_ACCESS_KEY
+- AWS_REGION
 
 ### Singleton pattern
 
@@ -45,6 +47,9 @@ Please find below the usage for each of encapsulated services and supported meth
 For each there are link to sample of usage in the samples folder.
 
 #### Secrets Manager
+
+A simplified interface to AWS Secrets Manager.
+Please find usage details [here](docs/secrets-manager.md).
 
 #### S3
 
