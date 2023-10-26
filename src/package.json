@@ -1,6 +1,6 @@
 {
     "name": "@danielyaghil/aws-helpers",
-    "version": "0.9.14",
+    "version": "0.9.14.1",
     "description": "A set of helpers to simplify usage of AWS Javascript v3 API",
     "main": "index.js",
     "scripts": {
@@ -24,7 +24,7 @@
     "bugs": {
         "url": "https://github.com/danielyaghil/aws-helpers/issues"
     },
-    "homepage": "https://github.com/danielyaghil/aws-helpers/src#readme",
+    "homepage": "https://github.com/danielyaghil/aws-helpers/#readme",
     "dependencies": {
         "@aws-sdk/client-cognito-identity-provider": "^3.398.0",
         "@aws-sdk/client-dynamodb": "^3.398.0",

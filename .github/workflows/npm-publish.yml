@@ -1,65 +1,71 @@
 name: NPM-publish
 
 on:
-    workflow_dispatch:
+  workflow_dispatch:
 
-    push:
-        branches:
-            - 'main'
-        paths:
-            - 'src/**.js'
-            - src/package.json
-            - src/package-lock.json
-            - src/README.rnd
+  push:
+    branches:
+      - 'main'
+    paths:
+      - 'src/**.js'
+      - src/package.json
+      - src/package-lock.json
+      - README.rnd
+      - 'docs/**.md'
 defaults:
-    run:
-        working-directory: src
+  run:
+    working-directory: src
 
 jobs:
-    validate:
-        runs-on: ubuntu-latest
+  validate:
+    runs-on: ubuntu-latest
 
-        strategy:
-            matrix:
-                node-version: [18.x]
-                # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
+    strategy:
+      matrix:
+        node-version: [18.x]
+        # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
 
-        steps:
-            - uses: actions/checkout@v3
+    steps:
+      - uses: actions/checkout@v3
 
-            - name: Use Node.js ${{ matrix.node-version }}
-              uses: actions/setup-node@v3
-              with:
-                  node-version: ${{ matrix.node-version }}
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
 
-            - name: Install app
-              run: npm ci
+      - name: Install app
+        working-directory: src
+        run: npm ci
 
-            - name: Lint app
-              run: npm run lint:check
+      - name: Lint app
+        working-directory: src
+        run: npm run lint:check
 
-            - name: Prettier app
-              run: npm run format:check
+      - name: Prettier app
+        working-directory: src
+        run: npm run format:check
 
-            - name: Test app
-              run: npm run test
+      - name: Test app
+        working-directory: src
+        run: npm run test
 
-    publish:
-        runs-on: ubuntu-latest
-        needs: validate
-        steps:
-            - uses: actions/checkout@v3
+  publish:
+    runs-on: ubuntu-latest
+    needs: validate
+    steps:
+      - uses: actions/checkout@v3
 
-            - uses: actions/setup-node@v3
-              with:
-                  node-version: 18
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 18
 
-            - name: Install
-              run: npm ci
+      - name: Install
+        working-directory: src
+        run: npm ci
 
-            - uses: JS-DevTools/npm-publish@v1
-              with:
-                  token: ${{ secrets.NPM_TOKEN }}
-                  access: public
-                  package: src/package.json
-                  check-version: true
+      - uses: JS-DevTools/npm-publish@v1
+        with:
+          token: ${{ secrets.NPM_TOKEN }}
+          access: public
+          package: src/package.json
+          check-version: true
