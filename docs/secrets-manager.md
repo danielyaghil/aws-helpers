@@ -6,10 +6,10 @@ A simplified interface to AWS Secrets Manager.
 
 ## Installation
 
-See [Installation section in main page](../src/README.md#authorization) for details.
+See [Installation section in main page](README.md#authorization) for details.
 
 ## Authorization
 
-See [Authorization section in main page](../src/README.md#authorization) for details.
+See [Authorization section in main page](README.md#authorization) for details.
 
 ## Usage
