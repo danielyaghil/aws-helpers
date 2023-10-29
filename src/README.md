@@ -19,9 +19,9 @@ The library uses the AWS SDK v3, so you can use any of the authorization methods
 
 For example, you can simply define in your environment the following variables:
 
-- AWS_ACCESS_KEY_ID
-- AWS_SECRET_ACCESS_KEY
-- AWS_REGION
+-   AWS_ACCESS_KEY_ID
+-   AWS_SECRET_ACCESS_KEY
+-   AWS_REGION
 
 ### Singleton pattern
 
@@ -29,8 +29,8 @@ The library uses the singleton pattern, so you can use the same instance of the 
 So to invoke specific service, you can use the following code:
 
 ```javascript
-const { XXXClient } = require('@danielyaghil/aws-helpers');
-const client = XXXClient.instance();
+const { <PackageClient> } = require('@danielyaghil/aws-helpers');
+const client = <PackageClient>.instance();
 ```
 
 ### Region override
@@ -38,7 +38,7 @@ const client = XXXClient.instance();
 You can override the region defined in the environment by passing the region as a parameter to the getInstance method:
 
 ```javascript
-const client = XXXClient.instance('REGION');
+const client = <PackageClient>.instance('REGION');
 ```
 
 ### Service specific usage
@@ -49,7 +49,7 @@ For each there are link to sample of usage in the samples folder.
 #### Secrets Manager
 
 A simplified interface to AWS Secrets Manager.
-Please find usage details [here](docs/secrets-manager.md).
+Please find usage details [here](https://github.com/danielyaghil/aws-helpers/docs/secrets-manager.md).
 
 #### S3
 
