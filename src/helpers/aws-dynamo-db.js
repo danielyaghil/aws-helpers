@@ -27,6 +27,7 @@ class DbCommandResult {
 class DB {
     #dynamoDbClient = null;
     #dynamoDbDocumentClient = null;
+    #existingTables = null;
 
     constructor(region) {
         this.#dynamoDbClient = new DynamoDBClient({
@@ -148,13 +149,20 @@ class DB {
     }
 
     async existTable(tableName) {
-        const command = new ListTablesCommand({});
-        let result = await this.#applyCommand(command);
-        if (result.success) {
-            if (result.data.TableNames && result.data.TableNames.includes(tableName)) {
-                return true;
+        if (!this.#existingTables) {
+            const command = new ListTablesCommand({});
+            let result = await this.#applyCommand(command);
+            if (result.success) {
+                if (result.data.TableNames) {
+                    this.#existingTables = result.data.TableNames;
+                }
             }
         }
+
+        if (this.#existingTables && this.#existingTables.includes(tableName)) {
+            return true;
+        }
+
         return false;
     }
 
@@ -170,7 +178,7 @@ class DB {
 
         let validTable = await this.existTable(tableName);
         if (!validTable) {
-            console.log(`${method} table [${tableName}] dos not exist`);
+            console.log(`${method} table [${tableName}] does not exist`);
             return false;
         }
 
@@ -178,7 +186,7 @@ class DB {
     }
 
     async set(tableName, item) {
-        if (!this.#validateDocumentOperation(tableName, item, 'DB:Set')) {
+        if (!(await this.#validateDocumentOperation(tableName, item, 'DB:Set'))) {
             return false;
         }
 
@@ -196,7 +204,7 @@ class DB {
     }
 
     async get(tableName, key) {
-        if (!this.#validateDocumentOperation(tableName, key, 'DB:Get')) {
+        if (!(await this.#validateDocumentOperation(tableName, key, 'DB:Get'))) {
             return false;
         }
 
@@ -214,7 +222,7 @@ class DB {
     }
 
     async delete(tableName, key) {
-        if (!this.#validateDocumentOperation(tableName, key, 'DB:Delete')) {
+        if (!(await this.#validateDocumentOperation(tableName, key, 'DB:Delete'))) {
             return false;
         }
 
@@ -235,32 +243,32 @@ class DB {
 
     //#region queries
 
-    async query(tableName, keyFilter, additionalFilter, filterParams, sort, index) {
+    async query(tableName, keyCondition, filter = null, parameters, sort = 'asc', index = null, firstPageOnly = false) {
         if (!tableName) {
             console.log(`DB:Query - missing tableName`);
             return null;
         }
 
-        if (!keyFilter) {
+        if (!keyCondition) {
             console.log(`DB:Query - missing keyFilter`);
         }
 
-        if (!filterParams) {
-            console.log(`DB:Query - missing filterParams`);
+        if (!parameters) {
+            console.log(`DB:Query - missing parameters`);
         }
 
-        if (!this.existTable(tableName)) {
+        if (!(await this.existTable(tableName))) {
             console.log(`DB:Query table [${tableName}] does not exist`);
             return null;
         }
 
         let params = {
             TableName: tableName,
-            KeyConditionExpression: keyFilter,
-            ExpressionAttributeValues: filterParams
+            KeyConditionExpression: keyCondition,
+            ExpressionAttributeValues: parameters
         };
-        if (additionalFilter) {
-            params.FilterExpression = additionalFilter;
+        if (filter) {
+            params.FilterExpression = filter;
         }
         if (index) {
             params.IndexName = index;
@@ -269,25 +277,34 @@ class DB {
             params.ScanIndexForward = false;
         }
 
-        const command = new QueryCommand(params);
-        let result = await this.#applyDocumentCommand(command);
-        if (result.success) {
-            if (result.data && result.data.Items) {
-                return result.data.Items;
+        let completedScan = firstPageOnly;
+        let queriedItems = [];
+        do {
+            const command = new QueryCommand(params);
+            let result = await this.#applyDocumentCommand(command);
+            if (result.success) {
+                queriedItems = queriedItems.concat(result.data.Items);
             } else {
-                return [];
+                return null;
             }
-        }
-        return null;
+
+            if (result.data.LastEvaluatedKey) {
+                params.ExclusiveStartKey = result.data.LastEvaluatedKey;
+            } else {
+                completedScan = true;
+            }
+        } while (!completedScan);
+
+        return queriedItems;
     }
 
-    async scan(tableName, filter, filterParams, index) {
+    async scan(tableName, filter = null, parameters = null, index = null, firstPageOnly = false) {
         if (!tableName) {
             console.log(`DB:Scan - missing tableName`);
             return null;
         }
 
-        if (!this.existTable(tableName)) {
+        if (!(await this.existTable(tableName))) {
             console.log(`DB:Scan table [${tableName}] does not exist`);
             return null;
         }
@@ -297,22 +314,31 @@ class DB {
         };
         if (filter) {
             params.FilterExpression = filter;
-            params.ExpressionAttributeValues = filterParams;
+            params.ExpressionAttributeValues = parameters;
         }
         if (index) {
             params.IndexName = index;
         }
 
-        const command = new ScanCommand(params);
-        let result = await this.#applyDocumentCommand(command);
-        if (result.success) {
-            if (result.data && result.data.Items) {
-                return result.data.Items;
+        let completedScan = firstPageOnly;
+        let scannedItems = [];
+        do {
+            const command = new ScanCommand(params);
+            let result = await this.#applyDocumentCommand(command);
+            if (result.success) {
+                scannedItems = scannedItems.concat(result.data.Items);
             } else {
-                return [];
+                return null;
             }
-        }
-        return null;
+
+            if (result.data.LastEvaluatedKey) {
+                params.ExclusiveStartKey = result.data.LastEvaluatedKey;
+            } else {
+                completedScan = true;
+            }
+        } while (!completedScan);
+
+        return scannedItems;
     }
 
     async executeStatement(tableName, filter, index, sortBy) {
@@ -331,16 +357,25 @@ class DB {
             Statement: query
         };
 
-        const command = new ExecuteStatementCommand(params);
-        let result = await this.#applyDocumentCommand(command);
-        if (result.success) {
-            if (result.data && result.data.Items) {
-                return result.data.Items;
+        let completedScan = false;
+        let selectedItems = [];
+        do {
+            const command = new ExecuteStatementCommand(params);
+            let result = await this.#applyDocumentCommand(command);
+            if (result.success) {
+                selectedItems = selectedItems.concat(result.data.Items);
             } else {
-                return [];
+                return null;
             }
-        }
-        return null;
+
+            if (result.data.NextToken) {
+                params.NextToken = result.data.NextToken;
+            } else {
+                completedScan = true;
+            }
+        } while (!completedScan);
+
+        return selectedItems;
     }
 
     //#endregion
