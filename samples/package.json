@@ -2,7 +2,6 @@
   "name": "aws-helpers-sample",
   "version": "0.9.0",
   "description": "Samples files for AWS helpers",
-  "main": "s3.js",
   "scripts": {
     "sample-s3": "node --inspect ./sample-s3.js",
     "sample-dynamo": "node --inspect ./sample-dynamo-db.js",
@@ -23,6 +22,7 @@
   "homepage": "https://github.com/danielyaghil/aws-helpers/tree/main#readme",
   "dependencies": {
     "@danielyaghil/aws-helpers": "^0.9.4",
-    "dotenv": "^16.3.1"
+    "dotenv": "^16.3.1",
+    "uuid": "^9.0.1"
   }
 }
