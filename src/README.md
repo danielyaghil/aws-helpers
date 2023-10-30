@@ -7,4 +7,4 @@ It encapsulates AWS Javascript SDK v3 (https://docs.aws.amazon.com/AWSJavaScript
 
 ## Documentation
 
-Full documentation can be found [here](/docs/README.md).
+Full documentation can be found [here](https://github.com/danielyaghil/aws-helpers/docs/README.md).

@@ -63,9 +63,9 @@ jobs:
         working-directory: src
         run: npm ci
 
-      - uses: JS-DevTools/npm-publish@v1
+      - uses: JS-DevTools/npm-publish@v3
         with:
           token: ${{ secrets.NPM_TOKEN }}
           access: public
           package: src/package.json
-          check-version: true
+          strategy: all
