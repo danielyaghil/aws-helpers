@@ -341,7 +341,7 @@ class DB {
         return scannedItems;
     }
 
-    async executeStatement(tableName, filter, index, sortBy) {
+    async executeStatement(tableName, filter, index = null, sortBy = null, sortDirection = 'asc') {
         if (!tableName || !filter) {
             console.log(`DB:executeStatement - missing tableName or filter`);
             return null;
@@ -350,7 +350,7 @@ class DB {
         let useIndex = index != null ? `."${index}"` : '';
         let query = `select * from ${tableName}${useIndex} where ${filter}`;
         if (sortBy) {
-            query += ` order by ${sortBy} desc`;
+            query += ` order by ${sortBy} ${sortDirection}`;
         }
 
         let params = {
