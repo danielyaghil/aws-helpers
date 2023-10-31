@@ -7,8 +7,6 @@ const {
 const AWSBase = require('./aws-base');
 
 class AWSCognito extends AWSBase {
-    client = null;
-
     constructor(region) {
         super(CognitoIdentityProviderClient, region);
     }
@@ -24,7 +22,7 @@ class AWSCognito extends AWSBase {
                 Username: user.Username
             };
             const command = new AdminListGroupsForUserCommand(input);
-            const response = await this.client.send(command);
+            const response = await this.applyCommand(command);
             user.Groups = response.Groups;
         } catch (error) {
             console.debug(error);

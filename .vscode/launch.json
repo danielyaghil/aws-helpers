@@ -10,6 +10,13 @@
       "name": "Sample DynamoDB",
       "skipFiles": ["<node_internals>/**"],
       "program": "./samples/sample-dynamo-db.js"
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Sample Cognito",
+      "skipFiles": ["<node_internals>/**"],
+      "program": "./samples/sample-cognito.js"
     }
   ]
 }

@@ -5,7 +5,8 @@
   "scripts": {
     "sample-s3": "node --inspect ./sample-s3.js",
     "sample-dynamo": "node --inspect ./sample-dynamo-db.js",
-    "sample-secret": "node --inspect ./sample-secrets.js"
+    "sample-secrets": "node --inspect ./sample-secrets.js",
+    "sample-cognito": "node --inspect ./sample-cognito.js"
   },
   "repository": {
     "type": "git",
@@ -21,7 +22,7 @@
   },
   "homepage": "https://github.com/danielyaghil/aws-helpers/tree/main#readme",
   "dependencies": {
-    "@danielyaghil/aws-helpers": "^0.9.4",
+    "@danielyaghil/aws-helpers": "^0.9.19",
     "dotenv": "^16.3.1",
     "uuid": "^9.0.1"
   }

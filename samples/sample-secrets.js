@@ -1,6 +1,5 @@
 require('dotenv').config({ path: '.env', debug: true });
-//const { SecretsClient } = require('@danielyaghil/aws-helpers');
-const { SecretsClient } = require('../src/index');
+const { SecretsClient } = require('@danielyaghil/aws-helpers');
 
 async function main() {
   console.log(
