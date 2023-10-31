@@ -11,9 +11,6 @@ on:
       - src/package.json
       - src/package-lock.json
       - README.rnd
-      - 'docs/**.md'
-      - samples/**
-      - samples/
 defaults:
   run:
     working-directory: src
