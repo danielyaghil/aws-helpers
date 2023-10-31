@@ -59,7 +59,7 @@ jobs:
         run: npm ci
 
       - name: Copy README
-        run: cp ../README.md README.rnd
+        run: cp ../README.md README.md
 
       - uses: JS-DevTools/npm-publish@v3
         with:
