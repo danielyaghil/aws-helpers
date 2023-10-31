@@ -1,3 +1,5 @@
 /.github/
 /.vscode/
-/.samples/
+/samples/
+/.eslintrc.json
+/.prettierrc.json

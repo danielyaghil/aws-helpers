@@ -12,6 +12,8 @@ on:
       - src/package-lock.json
       - README.rnd
       - 'docs/**.md'
+      - samples/**
+      - samples/
 defaults:
   run:
     working-directory: src
@@ -34,19 +36,15 @@ jobs:
           node-version: ${{ matrix.node-version }}
 
       - name: Install app
-        working-directory: src
         run: npm ci
 
       - name: Lint app
-        working-directory: src
         run: npm run lint:check
 
       - name: Prettier app
-        working-directory: src
         run: npm run format:check
 
       - name: Test app
-        working-directory: src
         run: npm run test
 
   publish:
@@ -62,6 +60,9 @@ jobs:
       - name: Install
         working-directory: src
         run: npm ci
+
+      - name: Copy README
+        run: cp README.md src/README.rnd
 
       - uses: JS-DevTools/npm-publish@v3
         with:
