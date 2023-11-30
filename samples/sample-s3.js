@@ -1,4 +1,4 @@
-require('dotenv').config({ path: './samples/.env', debug: true });
+require('dotenv').config({ path: './.env', debug: true });
 //const { S3Client } = require('@danielyaghil/aws-helpers');
 const { S3Client } = require('../src/index');
 
