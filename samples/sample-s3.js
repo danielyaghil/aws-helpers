@@ -1,13 +1,22 @@
-const { S3Client } = require('@danielyaghil/aws-helpers');
+require('dotenv').config({ path: './samples/.env', debug: true });
+//const { S3Client } = require('@danielyaghil/aws-helpers');
+const { S3Client } = require('../src/index');
 
 async function main() {
   const s3Client = S3Client.instance();
 
-  const data = await s3Client.put('aws-helpers-sample', 'sample.txt', 'txt');
+  //put a text
+  const data = await s3Client.put(
+    'aws-helpers-sample',
+    'sample.txt',
+    'private',
+    'my sample text'
+  );
   console.log(`Text of aws-helper-sample/sample.txt: ${data}`);
 
-  const body = await s3Client.get('aws-helpers-sample', 'sample.txt');
-  console.log('Body (stream) of aws-helper-sample/sample.txt:' + body);
+  //retrieve text
+  const content = await s3Client.get('aws-helpers-sample', 'sample.txt');
+  console.log('Text of aws-helper-sample/sample.txt:' + content);
 }
 
 main();
