@@ -1,5 +1,4 @@
 const { S3Client, GetObjectCommand, PutObjectCommand, DeleteObjectCommand } = require('@aws-sdk/client-s3');
-const Readable = require('stream').Readable;
 const mime = require('mime');
 const AWSBase = require('./aws-base');
 
@@ -21,15 +20,6 @@ class AWSS3 extends AWSBase {
         });
     }
 
-    async #textToStream(text) {
-        return await new Promise((resolve, _) => {
-            const stream = new Readable();
-            stream.push(text);
-            stream.push(null);
-            resolve(stream);
-        });
-    }
-
     async get(bucket, key, outputType = 'stream') {
         const params = {
             Bucket: bucket,
@@ -40,7 +30,9 @@ class AWSS3 extends AWSBase {
         let data = await this.applyCommand(cmd);
         if (data && data.$metadata.httpStatusCode == 200 && data.Body) {
             if (outputType == 'txt' || outputType == 'text') {
-                return await this.#streamToText(data.Body);
+                return await data.Body.transformToString();
+            } else if (outputType == 'byte-array') {
+                return await data.Body.transformToByteArray();
             } else {
                 return data.Body;
             }
@@ -55,19 +47,12 @@ class AWSS3 extends AWSBase {
             throw new Error('Content type could not be determined from key');
         }
 
-        let stream = null;
-        if (typeof object == 'string') {
-            stream = await this.#textToStream(object);
-        } else {
-            stream = object;
-        }
-
         const params = {
             Bucket: bucket,
             Key: key,
             ACL: acl,
             ContentType: contentType,
-            Body: stream
+            Body: object
         };
 
         const cmd = new PutObjectCommand(params);
