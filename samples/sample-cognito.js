@@ -1,4 +1,4 @@
-require('dotenv').config({ path: './samples/.env', debug: true });
+require('dotenv').config({ path: '.env', debug: true });
 const { CognitoClient } = require('../src/index.js');
 //const { CognitoClient } = require('@danielyaghil/aws-helpers');
 

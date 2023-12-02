@@ -17,6 +17,14 @@
       "name": "Sample Cognito",
       "skipFiles": ["<node_internals>/**"],
       "program": "./samples/sample-cognito.js"
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Sample S3",
+      "skipFiles": ["<node_internals>/**"],
+      "cwd": "${workspaceFolder}/samples",
+      "program": "sample-s3.js"
     }
   ]
 }

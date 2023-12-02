@@ -1,4 +1,4 @@
-require('dotenv').config({ path: './samples/.env', debug: true });
+require('dotenv').config({ path: '.env', debug: true });
 const { v4: uuids4 } = require('uuid');
 const { DynamoDbClient } = require('@danielyaghil/aws-helpers');
 
