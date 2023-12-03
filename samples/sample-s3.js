@@ -1,10 +1,11 @@
 // this sample demonstrates how to use the S3Client class to put and get files from s3
 // It requires AWS account with s3 access and a bucket named aws-helpers-sample to be created
+// Run: npm run sample-s3
 
 require('dotenv').config({ path: './.env', debug: true });
 var fs = require('fs');
-//const { S3Client } = require('@danielyaghil/aws-helpers');
-const { S3Client } = require('../src/index');
+const { S3Client } = require('@danielyaghil/aws-helpers');
+//const { S3Client } = require('../src/index');
 
 async function main() {
   const s3Client = S3Client.instance();
