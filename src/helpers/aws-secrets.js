@@ -34,6 +34,14 @@ class AWSSecret extends AWSBase {
         this.#cache[secretId] = value;
     }
 
+    //override from AWSBase
+    async processData(data) {
+        if (data && data.SecretString) {
+            return data.SecretString;
+        }
+        return null;
+    }
+
     async get(secretId) {
         let data = this.#getFromCache(secretId);
         if (data) {
