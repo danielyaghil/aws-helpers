@@ -8,3 +8,4 @@ It encapsulates AWS Javascript SDK v3 (https://docs.aws.amazon.com/AWSJavaScript
 ## Documentation
 
 Full documentation can be found [here](https://github.com/danielyaghil/aws-helpers/tree/main/docs).
+Sample code can be found [here](https://github.com/danielyaghil/aws-helpers/tree/samples).

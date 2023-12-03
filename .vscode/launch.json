@@ -9,14 +9,16 @@
       "request": "launch",
       "name": "Sample DynamoDB",
       "skipFiles": ["<node_internals>/**"],
-      "program": "./samples/sample-dynamo-db.js"
+      "cwd": "${workspaceFolder}/samples",
+      "program": "./sample-dynamo-db.js"
     },
     {
       "type": "node",
       "request": "launch",
       "name": "Sample Cognito",
       "skipFiles": ["<node_internals>/**"],
-      "program": "./samples/sample-cognito.js"
+      "cwd": "${workspaceFolder}/samples",
+      "program": "./sample-cognito.js"
     },
     {
       "type": "node",
@@ -25,6 +27,14 @@
       "skipFiles": ["<node_internals>/**"],
       "cwd": "${workspaceFolder}/samples",
       "program": "sample-s3.js"
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Sample Secrets",
+      "skipFiles": ["<node_internals>/**"],
+      "cwd": "${workspaceFolder}/samples",
+      "program": "sample-secrets.js"
     }
   ]
 }

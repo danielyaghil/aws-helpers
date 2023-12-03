@@ -1,6 +1,12 @@
+// This sample demonstrates how to use the DynamoDbClient class
+// It requires AWS account with dynamo db access and a table named aws-helpers-sample to be created
+// The table should have a primary key named pk of type string and a sort key named sk of type number
+// Run: npm run sample-dynamo
+
 require('dotenv').config({ path: '.env', debug: true });
 const { v4: uuids4 } = require('uuid');
 const { DynamoDbClient } = require('@danielyaghil/aws-helpers');
+//const { DynamoDbClient } = require('../src/index');
 
 async function main() {
   const tableName = 'aws-helpers-sample';
@@ -32,7 +38,7 @@ async function main() {
     console.log('=====================');
 
     console.log(
-      `Reading specific item from table ${tableName} with pk: ${pk} and sk: 0`
+      `Get specific item from table ${tableName} with pk: ${pk} and sk: 0`
     );
     key = {
       pk: pk,
@@ -40,7 +46,7 @@ async function main() {
     };
     const item = await dynamoDbClient.get(tableName, key);
     console.log(
-      `Done reading specific item from table ${tableName} with pk ${pk} and sk: 0: ${JSON.stringify(
+      `Done get specific item from table ${tableName} with pk ${pk} and sk: 0: ${JSON.stringify(
         item
       )}`
     );
@@ -170,8 +176,14 @@ async function main() {
     console.log('=====================');
 
     console.log(`ExecuteStatement items from table ${tableName}`);
-    const statement = `SELECT * FROM ${tableName} WHERE pk = ${pk}}`;
-    items = await dynamoDbClient.executeStatement(statement);
+    filter = `pk = '${pk}'`;
+    items = await dynamoDbClient.executeStatement(
+      tableName,
+      filter,
+      null,
+      'sk',
+      'desc'
+    );
     console.log(
       `Done ExecuteStatement items from table ${tableName}: ${JSON.stringify(
         items
@@ -179,6 +191,25 @@ async function main() {
     );
 
     //#endregion
+
+    //#region Basic operation
+
+    console.log('=====================');
+
+    console.log(`Delete item from table ${tableName} with pk: ${pk} and sk: 0`);
+
+    key = {
+      pk: pk,
+      sk: 0,
+    };
+
+    result = await dynamoDbClient.delete(tableName, key);
+
+    console.log(
+      `Done deleting item from table ${tableName} with pk ${pk} and sk: 0: ${result}`
+    );
+
+    console.log('=====================');
   } catch (err) {
     console.log('=====================');
     console.error('Error:', err);

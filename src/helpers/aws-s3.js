@@ -11,15 +11,6 @@ class AWSS3 extends AWSBase {
         return super.instance(AWSS3, region);
     }
 
-    async #streamToText(stream) {
-        return await new Promise((resolve, reject) => {
-            const chunks = [];
-            stream.on('data', (chunk) => chunks.push(chunk));
-            stream.on('error', reject);
-            stream.on('end', () => resolve(Buffer.concat(chunks).toString('utf8')));
-        });
-    }
-
     async get(bucket, key, outputType = 'stream') {
         const params = {
             Bucket: bucket,

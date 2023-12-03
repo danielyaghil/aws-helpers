@@ -251,10 +251,12 @@ class DB {
 
         if (!keyCondition) {
             console.log(`DB:Query - missing keyFilter`);
+            return null;
         }
 
         if (!parameters) {
             console.log(`DB:Query - missing parameters`);
+            return null;
         }
 
         if (!(await this.existTable(tableName))) {
@@ -341,14 +343,21 @@ class DB {
         return scannedItems;
     }
 
-    async executeStatement(tableName, filter, index = null, sortBy = null, sortDirection = 'asc') {
+    async executeStatement(
+        tableName,
+        filter,
+        index = null,
+        sortBy = null,
+        sortDirection = 'asc',
+        firstPageOnly = false
+    ) {
         if (!tableName || !filter) {
             console.log(`DB:executeStatement - missing tableName or filter`);
             return null;
         }
 
         let useIndex = index != null ? `."${index}"` : '';
-        let query = `select * from ${tableName}${useIndex} where ${filter}`;
+        let query = `select * from "${tableName}${useIndex}" where ${filter}`;
         if (sortBy) {
             query += ` order by ${sortBy} ${sortDirection}`;
         }
@@ -357,7 +366,7 @@ class DB {
             Statement: query
         };
 
-        let completedScan = false;
+        let completedScan = firstPageOnly;
         let selectedItems = [];
         do {
             const command = new ExecuteStatementCommand(params);
