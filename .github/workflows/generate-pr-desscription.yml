@@ -3,6 +3,8 @@
 
 name: generate pull request description
 
+permissions: write-all
+
 on:
   workflow_dispatch:
 
