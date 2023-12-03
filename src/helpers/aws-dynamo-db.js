@@ -358,7 +358,7 @@ class DB {
 
         const tableNameFormatted = `"${tableName}"`;
         const useIndex = index != null ? `."${index}"` : '';
-        let query = `select * from ${tableNameFormatted}${useIndex}s where ${filter}`;
+        let query = `select * from ${tableNameFormatted}${useIndex} where ${filter}`;
         if (sortBy) {
             query += ` order by ${sortBy} ${sortDirection}`;
         }
