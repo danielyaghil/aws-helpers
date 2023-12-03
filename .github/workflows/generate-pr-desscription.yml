@@ -1,44 +1,38 @@
 # This workflow will do a clean installation of node dependencies, cache/restore them, build the source code and run tests across different versions of node
 # For more information see: https://help.github.com/actions/language-and-framework-guides/using-nodejs-with-github-actions
 
-name: validation
+name: generate pull request description
 
 on:
-    workflow_dispatch:
+  workflow_dispatch:
 
-    pull_request:
-        branches: ['*']
-
+  pull_request:
+    branches: ['*']
 
 defaults:
-    run:
-        working-directory: src
+  run:
+    working-directory: src
 
 jobs:
-    validate:
-        runs-on: ubuntu-latest
+  Genrate-pull-request-description:
+    runs-on: ubuntu-latest
 
-        strategy:
-            matrix:
-                node-version: [18.x]
-                # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
+    strategy:
+      matrix:
+        node-version: [18.x]
+        # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
 
-        steps:
-            - uses: actions/checkout@v3
+    steps:
+      - uses: actions/checkout@v3
 
-            - name: Use Node.js ${{ matrix.node-version }}
-              uses: actions/setup-node@v3
-              with:
-                  node-version: ${{ matrix.node-version }}
+      - uses: octue/generate-pull-request-description@1.0.0.beta-2
+        id: pr-description
+        with:
+          pull_request_url: ${{ github.event.pull_request.url }}
+          api_token: ${{ secrets.GITHUB_TOKEN }}
 
-            - name: Install app
-              run: npm ci
-
-            - name: Lint app
-              run: npm run lint:check
-
-            - name: Prettier app
-              run: npm run format:check
-
-            - name: Test app
-              run: npm run test
+      - name: Update pull request body
+        uses: riskledger/update-pr-description@v2
+        with:
+          body: ${{ steps.pr-description.outputs.pull_request_description }}
+          token: ${{ secrets.GITHUB_TOKEN }}
