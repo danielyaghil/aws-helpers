@@ -1,6 +1,6 @@
 {
     "name": "@danielyaghil/aws-helpers",
-    "version": "0.9.30",
+    "version": "0.9.40",
     "description": "A set of helpers to simplify usage of AWS Javascript v3 API",
     "main": "index.js",
     "scripts": {
