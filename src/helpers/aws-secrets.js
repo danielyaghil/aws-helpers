@@ -34,13 +34,6 @@ class AWSSecret extends AWSBase {
         this.#cache[secretId] = value;
     }
 
-    async processData(data) {
-        if (data && data.SecretString) {
-            return data.SecretString;
-        }
-        return null;
-    }
-
     async get(secretId) {
         let data = this.#getFromCache(secretId);
         if (data) {
@@ -62,6 +55,10 @@ class AWSSecret extends AWSBase {
         this.#setIntoCache(secretId, data);
 
         return JSON.parse(data);
+    }
+
+    refresh() {
+        this.#cache = {};
     }
 }
 
