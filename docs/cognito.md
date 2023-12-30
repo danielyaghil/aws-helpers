@@ -27,9 +27,9 @@ const client = CognitoClient.instance();
 
 ## Usage - Tokens
 
-### Generate token from authorization code
+### Get token from authorization code
 
-To generate a token from an authorization code, you need to call the "generateTokenFromAuthCode" method with the following parameters:
+To generate a token from an authorization code, you need to call the "getTokenFromAuthCode" method with the following parameters:
 
 - clientId: The client ID for the user pool client app.
 - clientSecret: The client secret for the user pool client app.
@@ -51,7 +51,7 @@ E.g.:
 ```javascript
 const { CognitoClient } = require('@danielyaghil/aws-helpers');
 const client = CognitoClient.instance();
-const tokenResponse = client.generateTokenFromAuthCode(
+const tokenResponse = client.getTokenFromAuthCode(
   'client-id',
   'client-secret',
   'redirect-uri',
@@ -62,9 +62,9 @@ const tokenResponse = client.generateTokenFromAuthCode(
 const accessToken = tokenResponse.accessToken;
 ```
 
-### Generate token using client credentials
+### Get token using client credentials
 
-To generate a token using client credentials, you need to call the "generateTokenFromClientCredentials" method with the following parameters:
+To generate a token using client credentials, you need to call the "getTokenFromClientCredentials" method with the following parameters:
 
 - clientId: The client ID for the user pool client app.
 - clientSecret: The client secret for the user pool client app.
@@ -81,7 +81,7 @@ E.g.:
 ```javascript
 const { CognitoClient } = require('@danielyaghil/aws-helpers');
 const client = CognitoClient.instance();
-const tokenResponse = client.generateTokenFromClientCredentials(
+const tokenResponse = client.getTokenFromClientCredentials(
   'client-id',
   'client-secret',
   'scope',
