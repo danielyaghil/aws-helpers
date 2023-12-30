@@ -15,7 +15,6 @@ async function main() {
   const userPoolId = process.env.COGNITO_USER_POOL_ID;
 
   const cognitoClient = CognitoClient.instance();
-
   console.log('========= ADMIN ==============');
 
   const groups = await cognitoClient.getAllGroups(userPoolId);
@@ -37,7 +36,7 @@ async function main() {
     process.env.COGNITO_CLIENT_ID,
     process.env.COGNITO_CLIENT_SECRET,
     process.env.COGNITO_SCOPE,
-    process.env.COGNITO_BASE_URL
+    process.env.COGNITO_DOMAIN
   );
   console.log(`Token from Client Credentials: ${JSON.stringify(token)}`);
 

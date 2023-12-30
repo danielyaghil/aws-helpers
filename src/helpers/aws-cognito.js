@@ -96,14 +96,14 @@ class AWSCognito extends AWSBase {
             });
     }
 
-    async getTokenFromAuthCode(clientId, clientSecret, redirectUri, code, userPoolBaseUrl, tokenType = 'all') {
-        if (!clientId || !clientSecret || !redirectUri || !code || !userPoolBaseUrl) {
+    async getTokenFromAuthCode(clientId, clientSecret, redirectUri, code, domain, tokenType = 'all') {
+        if (!clientId || !clientSecret || !redirectUri || !code || !domain) {
             console.log('AWSCognito:getTokenFromAuthCode - missing required parameters');
             return null;
         }
 
         let body = `grant_type=authorization_code&client_id=${clientId}&client_secret=${clientSecret}&redirect_uri=${redirectUri}&code=${code}`;
-        let response = await this.#getToken(userPoolBaseUrl, body);
+        let response = await this.#getToken(domain, body);
         if (!response) {
             return null;
         }
@@ -133,14 +133,14 @@ class AWSCognito extends AWSBase {
         return output;
     }
 
-    async getTokenFromClientCredentials(clientId, clientSecret, scope, userPoolBaseUrl) {
-        if (!clientId || !clientSecret || !scope || !userPoolBaseUrl) {
+    async getTokenFromClientCredentials(clientId, clientSecret, scope, domain) {
+        if (!clientId || !clientSecret || !scope || !domain) {
             console.log('AWSCognito:getTokenFromClientCredentials - missing required parameters');
             return null;
         }
 
         let body = `grant_type=client_credentials&client_id=${clientId}&client_secret=${clientSecret}&scope=${scope}`;
-        let response = await this.#getToken(userPoolBaseUrl, body);
+        let response = await this.#getToken(domain, body);
         if (!response) {
             return null;
         }
@@ -153,6 +153,11 @@ class AWSCognito extends AWSBase {
     }
 
     async verify(userPoolId, clientId, token, tokenType = 'id') {
+        if (!userPoolId || !clientId || !token) {
+            console.log('AWSCognito:verify - missing required parameters');
+            return null;
+        }
+
         const verifier = CognitoJwtVerifier.create({
             userPoolId: userPoolId,
             tokenUse: tokenType,

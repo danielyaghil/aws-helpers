@@ -35,7 +35,7 @@ To generate a token from an authorization code, you need to call the "generateTo
 - clientSecret: The client secret for the user pool client app.
 - redirectUri: An authorized redirect URI for the user pool client app - must be the same as the one used to generate the authorization code via the login screen.
 - authCode: The authorization code received from the login screen.
-- userPoolBaseUrl: The base URL of the user pool (e.g. https://cognito-idp.eu-west-1.amazonaws.com)
+- domain: The domain of the user pool as defined in app integration domain (e.g. https://cognito-idp.eu-west-1.amazonaws.com)
 - tokenType: The type of token to generate. It can be either "id", "access", "refresh" or "all" (default is "all").
 
 Response is an object with the following properties:
@@ -56,7 +56,7 @@ const tokenResponse = client.generateTokenFromAuthCode(
   'client-secret',
   'redirect-uri',
   'auth-code',
-  'https://user-pool-base-url',
+  'https://user-pool-domain',
   'all'
 );
 const accessToken = tokenResponse.accessToken;
@@ -69,7 +69,7 @@ To generate a token using client credentials, you need to call the "generateToke
 - clientId: The client ID for the user pool client app.
 - clientSecret: The client secret for the user pool client app.
 - scope: The scope of the access request as described in https://docs.aws.amazon.com/cognito/latest/developerguide/token-endpoint.html
-- userPoolBaseUrl: The base URL of the user pool (e.g. https://cognito-idp.eu-west-1.amazonaws.com)
+- domain: The domain of the user pool as defined in app integration domain (e.g. https://cognito-idp.eu-west-1.amazonaws.com)
 
 Response is an object with the following properties:
 
@@ -85,7 +85,7 @@ const tokenResponse = client.generateTokenFromClientCredentials(
   'client-id',
   'client-secret',
   'scope',
-  'https://user-pool-base-url'
+  'https://user-pool-domain'
 );
 const accessToken = tokenResponse.accessToken;
 ```

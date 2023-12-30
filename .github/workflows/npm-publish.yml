@@ -64,9 +64,6 @@ jobs:
       - name: Copy LICENSE
         run: cp ../LICENSE LICENSE
 
-      - name: Copy CHANGELOG
-        run: cp ../CHANGELOG.md CHANGELOG.md
-
       - uses: JS-DevTools/npm-publish@v3
         with:
           token: ${{ secrets.NPM_TOKEN }}
