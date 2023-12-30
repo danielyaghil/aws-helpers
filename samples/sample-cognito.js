@@ -4,8 +4,8 @@
 // Run: npm run sample-cognito
 
 require('dotenv').config({ path: '.env', debug: true });
-//const { CognitoClient } = require('@danielyaghil/aws-helpers');
-const { CognitoClient } = require('../src/index.js');
+const { CognitoClient } = require('@danielyaghil/aws-helpers');
+//const { CognitoClient } = require('../src/index.js');
 
 async function main() {
   console.log(
