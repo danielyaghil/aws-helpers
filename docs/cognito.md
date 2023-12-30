@@ -12,9 +12,7 @@ See [Installation section in main page](README.md#installation) for details.
 
 See [Authorization section in main page](README.md#authorization) for details.
 
-## Usage
-
-### Create a client instance
+## Usage - Create a client instance
 
 To create a client instance, you need to call the "instance" static method.
 It gets the region as an optional parameter (optional) (if not provided, it will be taken from the environment variable AWS_REGION)
@@ -26,6 +24,92 @@ E.g.:
 const { CognitoClient } = require('@danielyaghil/aws-helpers');
 const client = CognitoClient.instance();
 ```
+
+## Usage - Tokens
+
+### Generate token from authorization code
+
+To generate a token from an authorization code, you need to call the "generateTokenFromAuthCode" method with the following parameters:
+
+- clientId: The client ID for the user pool client app.
+- clientSecret: The client secret for the user pool client app.
+- redirectUri: An authorized redirect URI for the user pool client app - must be the same as the one used to generate the authorization code via the login screen.
+- authCode: The authorization code received from the login screen.
+- userPoolBaseUrl: The base URL of the user pool (e.g. https://cognito-idp.eu-west-1.amazonaws.com)
+- tokenType: The type of token to generate. It can be either "id", "access", "refresh" or "all" (default is "all").
+
+Response is an object with the following properties:
+
+- idToken: The ID token generated from the authorization code.
+- accessToken: The access token generated from the authorization code.
+- refreshToken: The refresh token generated from the authorization code.
+- expiresIn: The number of seconds until the access token expires.
+  Note: depending on the tokenType parameter, some of the properties may be missing.
+
+E.g.:
+
+```javascript
+const { CognitoClient } = require('@danielyaghil/aws-helpers');
+const client = CognitoClient.instance();
+const tokenResponse = client.generateTokenFromAuthCode(
+  'client-id',
+  'client-secret',
+  'redirect-uri',
+  'auth-code',
+  'https://user-pool-base-url',
+  'all'
+);
+const accessToken = tokenResponse.accessToken;
+```
+
+### Generate token using client credentials
+
+To generate a token using client credentials, you need to call the "generateTokenFromClientCredentials" method with the following parameters:
+
+- clientId: The client ID for the user pool client app.
+- clientSecret: The client secret for the user pool client app.
+- scope: The scope of the access request as described in https://docs.aws.amazon.com/cognito/latest/developerguide/token-endpoint.html
+- userPoolBaseUrl: The base URL of the user pool (e.g. https://cognito-idp.eu-west-1.amazonaws.com)
+
+Response is an object with the following properties:
+
+- accessToken: The access token generated from the authorization code.
+- expiresIn: The number of seconds until the access token expires.
+
+E.g.:
+
+```javascript
+const { CognitoClient } = require('@danielyaghil/aws-helpers');
+const client = CognitoClient.instance();
+const tokenResponse = client.generateTokenFromClientCredentials(
+  'client-id',
+  'client-secret',
+  'scope',
+  'https://user-pool-base-url'
+);
+const accessToken = tokenResponse.accessToken;
+```
+
+### Verify token an get payload
+
+To verify a token and get the payload, you need to call the "verify" method with the following parameters:
+
+- userPoolId: The user pool ID for the user pool.
+- clientId: The client ID for the user pool client app.
+- token: The token to verify.
+- tokenType: The type of token to verify. It can be either "id", "access" or "refresh" (default is "id").
+
+Response is the payload from the token (an object with the claims).
+
+E.g.:
+
+```javascript
+const { CognitoClient } = require('@danielyaghil/aws-helpers');
+const client = CognitoClient.instance();
+const payload = client.verify('user-pool-id', 'client-id', 'token', 'id');
+```
+
+## Usage - Admin
 
 ### Get all groups in a specific pool
 
@@ -45,7 +129,7 @@ E.g.:
 ```javascript
 const { CognitoClient } = require('@danielyaghil/aws-helpers');
 const client = CognitoClient.instance();
-const groups = await client.getGroups('pool-id');
+const groups = await client.getGroups('user-pool-id');
 ```
 
 ### Get all users in a specific group

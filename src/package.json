@@ -1,6 +1,6 @@
 {
     "name": "@danielyaghil/aws-helpers",
-    "version": "0.9.43",
+    "version": "0.9.45",
     "description": "A set of helpers to simplify usage of AWS Javascript v3 API",
     "main": "index.js",
     "scripts": {
@@ -32,6 +32,8 @@
         "@aws-sdk/client-secrets-manager": "^3.398.0",
         "@aws-sdk/client-sns": "^3.405.0",
         "@aws-sdk/lib-dynamodb": "^3.398.0",
+        "aws-jwt-verify": "^4.0.0",
+        "axios": "^1.6.3",
         "mime": "^3.0.0"
     },
     "devDependencies": {
