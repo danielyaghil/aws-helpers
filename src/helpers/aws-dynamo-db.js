@@ -28,6 +28,7 @@ class DB {
     #dynamoDbClient = null;
     #dynamoDbDocumentClient = null;
     #existingTables = null;
+    #capacityReporting = false;
 
     constructor(region) {
         this.#dynamoDbClient = new DynamoDBClient({
@@ -49,7 +50,6 @@ class DB {
         };
 
         const translateConfig = { marshallOptions, unmarshallOptions };
-
         this.#dynamoDbDocumentClient = DynamoDBDocumentClient.from(this.#dynamoDbClient, translateConfig);
     }
 
@@ -59,6 +59,11 @@ class DB {
         }
 
         return DB.singleton;
+    }
+
+    setConsumedCapacityReporting(capacityReporting) {
+        this.#capacityReporting = capacityReporting;
+        console.log(`Report consumed capacity: ${this.#capacityReporting ? 'on' : 'off'}`);
     }
 
     async #applyCommand(command) {
@@ -78,6 +83,10 @@ class DB {
 
     async #applyDocumentCommand(command) {
         try {
+            if (this.#capacityReporting) {
+                command.input.ReturnConsumedCapacity = 'TOTAL';
+                command.clientCommand.input.ReturnConsumedCapacity = 'TOTAL';
+            }
             const data = await this.#dynamoDbDocumentClient.send(command);
             if (data.$metadata.httpStatusCode !== 200) {
                 console.log(`Error in command : ${data}`);
@@ -198,6 +207,10 @@ class DB {
         const command = new PutCommand(params);
         let result = await this.#applyDocumentCommand(command);
         if (result.success) {
+            if (this.#capacityReporting) {
+                console.log(`DB:set - Param ${JSON.stringify(params)}`);
+                console.log(`DB:set - Total consumed capacity: ${result.data.ConsumedCapacity.CapacityUnits}`);
+            }
             return true;
         }
         return false;
@@ -216,6 +229,10 @@ class DB {
         const command = new GetCommand(params);
         let result = await this.#applyDocumentCommand(command);
         if (result.success && result.data && result.data.Item) {
+            if (this.#capacityReporting) {
+                console.log(`DB:get - Param ${JSON.stringify(params)}`);
+                console.log(`DB:get - Total consumed capacity: ${result.data.ConsumedCapacity.CapacityUnits}`);
+            }
             return result.data.Item;
         }
         return null;
@@ -234,6 +251,10 @@ class DB {
         const command = new DeleteCommand(params);
         let result = await this.#applyDocumentCommand(command);
         if (result.success) {
+            if (this.#capacityReporting) {
+                console.log(`DB:delete - Param ${JSON.stringify(params)}`);
+                console.log(`DB:delete - Total consumed capacity: ${result.data.ConsumedCapacity.CapacityUnits}`);
+            }
             return true;
         }
         return false;
@@ -281,11 +302,15 @@ class DB {
 
         let completedScan = firstPageOnly;
         let queriedItems = [];
+        let totalConsumedCapacity = 0;
         do {
             const command = new QueryCommand(params);
             let result = await this.#applyDocumentCommand(command);
             if (result.success) {
                 queriedItems = queriedItems.concat(result.data.Items);
+                if (this.#capacityReporting) {
+                    totalConsumedCapacity += result.data.ConsumedCapacity.CapacityUnits;
+                }
             } else {
                 return null;
             }
@@ -296,6 +321,11 @@ class DB {
                 completedScan = true;
             }
         } while (!completedScan);
+
+        if (this.#capacityReporting) {
+            console.log(`DB:Query - Params: ${JSON.stringify(params)}`);
+            console.log(`DB:Query - Total consumed capacity: ${totalConsumedCapacity}`);
+        }
 
         return queriedItems;
     }
@@ -324,11 +354,15 @@ class DB {
 
         let completedScan = firstPageOnly;
         let scannedItems = [];
+        let totalConsumedCapacity = 0;
         do {
             const command = new ScanCommand(params);
             let result = await this.#applyDocumentCommand(command);
             if (result.success) {
                 scannedItems = scannedItems.concat(result.data.Items);
+                if (this.#capacityReporting) {
+                    totalConsumedCapacity += result.data.ConsumedCapacity.CapacityUnits;
+                }
             } else {
                 return null;
             }
@@ -339,6 +373,11 @@ class DB {
                 completedScan = true;
             }
         } while (!completedScan);
+
+        if (this.#capacityReporting) {
+            console.log(`DB:Scan - Params: ${JSON.stringify(params)}`);
+            console.log(`DB:Scan - Total consumed capacity: ${totalConsumedCapacity}`);
+        }
 
         return scannedItems;
     }
@@ -369,11 +408,15 @@ class DB {
 
         let completedScan = firstPageOnly;
         let selectedItems = [];
+        let totalConsumedCapacity = 0;
         do {
             const command = new ExecuteStatementCommand(params);
             let result = await this.#applyDocumentCommand(command);
             if (result.success) {
                 selectedItems = selectedItems.concat(result.data.Items);
+                if (this.#capacityReporting) {
+                    totalConsumedCapacity += result.data.ConsumedCapacity.CapacityUnits;
+                }
             } else {
                 return null;
             }
@@ -384,6 +427,11 @@ class DB {
                 completedScan = true;
             }
         } while (!completedScan);
+
+        if (this.#capacityReporting) {
+            console.log(`DB:executeStatement - Params: ${JSON.stringify(params)}`);
+            console.log(`DB:executeStatement - Total consumed capacity: ${totalConsumedCapacity}`);
+        }
 
         return selectedItems;
     }

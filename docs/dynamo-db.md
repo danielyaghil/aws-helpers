@@ -27,6 +27,27 @@ const { DynamoDbClient } = require('@danielyaghil/aws-helpers');
 const client = DynamoDbClient.instance();
 ```
 
+### Analyze consumed capacity
+
+To analyze the consumed capacity of a Dynamo DB operation, you need to call the "setConsumedCapacityReporting" method.
+After calling, all all to the "get", "set", "delete", "query", "scan" and "executeStatement" methods will log the consumed capacity of the operation to the console in the following format:
+
+```cli
+DB:<method> - Param <command param>
+DB:<method> - Total consumed capacity: 1
+E.g.
+DB:delete - Param {"TableName":"aws-helpers-sample","Key":{"pk":"05eed023-3567-47c5-8306-628a39bf0453","sk":0},"ReturnConsumedCapacity":"TOTAL"}
+DB:delete - Total consumed capacity: 1
+```
+
+E.g.:
+
+```javascript
+const { DynamoDbClient } = require('@danielyaghil/aws-helpers');
+const client = DynamoDbClient.instance();
+client.setConsumedCapacityReporting(true);
+```
+
 ### Set an entry in a Dynamo DB table
 
 To set an entry in a Dynamo DB table, you need to call the "set" method with the table name and object as parameters.  

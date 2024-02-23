@@ -5,8 +5,8 @@
 
 require('dotenv').config({ path: '.env', debug: true });
 const { v4: uuids4 } = require('uuid');
-const { DynamoDbClient } = require('@danielyaghil/aws-helpers');
-//const { DynamoDbClient } = require('../src/index');
+//const { DynamoDbClient } = require('@danielyaghil/aws-helpers');
+const { DynamoDbClient } = require('../src/index');
 
 async function main() {
   const tableName = 'aws-helpers-sample';
@@ -16,6 +16,7 @@ async function main() {
   );
 
   const dynamoDbClient = DynamoDbClient.instance();
+  dynamoDbClient.setConsumedCapacityReporting(true);
 
   const pk = uuids4();
 
@@ -208,6 +209,8 @@ async function main() {
     console.log(
       `Done deleting item from table ${tableName} with pk ${pk} and sk: 0: ${result}`
     );
+
+    //#endregion
 
     console.log('=====================');
   } catch (err) {
