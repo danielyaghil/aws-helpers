@@ -1,3 +1,11 @@
+### 0.9.50 (2024-02-23)
+
+- DynamoDbClient: Add support for setting consumed capacity reporting.  
+  You can now set the consumed capacity reporting to true or false.  
+  When set to true, the client will log the consumed capacity of each operation.  
+  The default value is false.  
+  Details can be found in [dynamo db helper documentation](https://github.com/danielyaghil/aws-helpers/tree/main/docs/dynamo-db.md).
+
 ### 0.9.46 (2023-12-30)
 
 - Fix documentation and samples for CognitoClient.
