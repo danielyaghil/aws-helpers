@@ -46,6 +46,7 @@ The callback function should have the following signature:
 ```javascript
 function <functionName> (method, params, capacity)
 With:
+- table: the name of the table that was queried
 - method: the name of the method that was called
 - params: the parameters that were passed to the method as string
 - capacity: the consumed capacity of the operation
@@ -59,8 +60,8 @@ E.g.:
 const { DynamoDbClient } = require('@danielyaghil/aws-helpers');
 const client = DynamoDbClient.instance();
 
-function reportCapacityCallback(method, params, capacity) {
-  console.log(`DB:${method} - Param ${params}: ${capacity}`);
+function reportCapacityCallback(table, method, params, capacity) {
+  console.log(`${table} - ${method} - Param ${params}: ${capacity}`);
 }
 
 client.setConsumedCapacityReporting(true, reportCapacityCallback);
