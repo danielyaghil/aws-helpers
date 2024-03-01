@@ -212,7 +212,8 @@ class DB {
             if (this.#capacityReporting) {
                 if (this.#capacityReporterCallback) {
                     this.#capacityReporterCallback(
-                        'DB:set',
+                        tableName,
+                        'set',
                         JSON.stringify(params),
                         result.data.ConsumedCapacity.CapacityUnits
                     );
@@ -241,7 +242,8 @@ class DB {
             if (this.#capacityReporting) {
                 if (this.#capacityReporterCallback) {
                     this.#capacityReporterCallback(
-                        'DB:get',
+                        tableName,
+                        'get',
                         JSON.stringify(params),
                         result.data.ConsumedCapacity.CapacityUnits
                     );
@@ -270,7 +272,8 @@ class DB {
             if (this.#capacityReporting) {
                 if (this.#capacityReporterCallback) {
                     this.#capacityReporterCallback(
-                        'DB:delete',
+                        tableName,
+                        'delete',
                         JSON.stringify(params),
                         result.data.ConsumedCapacity.CapacityUnits
                     );
@@ -347,7 +350,7 @@ class DB {
 
         if (this.#capacityReporting) {
             if (this.#capacityReporterCallback) {
-                this.#capacityReporterCallback('DB:query', JSON.stringify(params), totalConsumedCapacity);
+                this.#capacityReporterCallback(tableName, 'query', JSON.stringify(params), totalConsumedCapacity);
             }
             console.log(`DB:Query - Params: ${JSON.stringify(params)}`);
             console.log(`DB:Query - Total consumed capacity: ${totalConsumedCapacity}`);
@@ -402,7 +405,7 @@ class DB {
 
         if (this.#capacityReporting) {
             if (this.#capacityReporterCallback) {
-                this.#capacityReporterCallback('DB:scan', JSON.stringify(params), totalConsumedCapacity);
+                this.#capacityReporterCallback(tableName, 'scan', JSON.stringify(params), totalConsumedCapacity);
             }
             console.log(`DB:Scan - Params: ${JSON.stringify(params)}`);
             console.log(`DB:Scan - Total consumed capacity: ${totalConsumedCapacity}`);
@@ -459,7 +462,12 @@ class DB {
 
         if (this.#capacityReporting) {
             if (this.#capacityReporterCallback) {
-                this.#capacityReporterCallback('DB:executeStatement', JSON.stringify(params), totalConsumedCapacity);
+                this.#capacityReporterCallback(
+                    tableName,
+                    'executeStatement',
+                    JSON.stringify(params),
+                    totalConsumedCapacity
+                );
             }
             console.log(`DB:executeStatement - Params: ${JSON.stringify(params)}`);
             console.log(`DB:executeStatement - Total consumed capacity: ${totalConsumedCapacity}`);

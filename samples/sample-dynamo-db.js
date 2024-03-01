@@ -8,9 +8,10 @@ const { v4: uuids4 } = require('uuid');
 //const { DynamoDbClient } = require('@danielyaghil/aws-helpers');
 const { DynamoDbClient } = require('../src/index');
 
-function reportConsumption(method, parameters, consumedCapacity) {
-  console.log(
-    `Consumed capacity for ${method} ${parameters}: ${consumedCapacity}`
+const consumedCapacityArray = [];
+function reportConsumption(table, method, parameters, consumedCapacity) {
+  consumedCapacityArray.push(
+    `Consumed capacity for ${table}-${method}-${parameters}: ${consumedCapacity}`
   );
 }
 
@@ -219,6 +220,9 @@ async function main() {
     //#endregion
 
     console.log('=====================');
+    console.log('=====================');
+    console.log('Consumed capacity:');
+    console.log(consumedCapacityArray);
   } catch (err) {
     console.log('=====================');
     console.error('Error:', err);
