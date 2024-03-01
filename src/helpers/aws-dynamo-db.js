@@ -29,6 +29,7 @@ class DB {
     #dynamoDbDocumentClient = null;
     #existingTables = null;
     #capacityReporting = false;
+    #capacityReporterCallback = null;
 
     constructor(region) {
         this.#dynamoDbClient = new DynamoDBClient({
@@ -61,8 +62,9 @@ class DB {
         return DB.singleton;
     }
 
-    setConsumedCapacityReporting(capacityReporting) {
+    setConsumedCapacityReporting(capacityReporting, capacityReportingCallback = null) {
         this.#capacityReporting = capacityReporting;
+        this.#capacityReporterCallback = capacityReportingCallback;
         console.log(`Report consumed capacity: ${this.#capacityReporting ? 'on' : 'off'}`);
     }
 
@@ -208,6 +210,13 @@ class DB {
         let result = await this.#applyDocumentCommand(command);
         if (result.success) {
             if (this.#capacityReporting) {
+                if (this.#capacityReporterCallback) {
+                    this.#capacityReporterCallback(
+                        'DB:set',
+                        JSON.stringify(params),
+                        result.data.ConsumedCapacity.CapacityUnits
+                    );
+                }
                 console.log(`DB:set - Param ${JSON.stringify(params)}`);
                 console.log(`DB:set - Total consumed capacity: ${result.data.ConsumedCapacity.CapacityUnits}`);
             }
@@ -230,6 +239,13 @@ class DB {
         let result = await this.#applyDocumentCommand(command);
         if (result.success && result.data && result.data.Item) {
             if (this.#capacityReporting) {
+                if (this.#capacityReporterCallback) {
+                    this.#capacityReporterCallback(
+                        'DB:get',
+                        JSON.stringify(params),
+                        result.data.ConsumedCapacity.CapacityUnits
+                    );
+                }
                 console.log(`DB:get - Param ${JSON.stringify(params)}`);
                 console.log(`DB:get - Total consumed capacity: ${result.data.ConsumedCapacity.CapacityUnits}`);
             }
@@ -252,6 +268,13 @@ class DB {
         let result = await this.#applyDocumentCommand(command);
         if (result.success) {
             if (this.#capacityReporting) {
+                if (this.#capacityReporterCallback) {
+                    this.#capacityReporterCallback(
+                        'DB:delete',
+                        JSON.stringify(params),
+                        result.data.ConsumedCapacity.CapacityUnits
+                    );
+                }
                 console.log(`DB:delete - Param ${JSON.stringify(params)}`);
                 console.log(`DB:delete - Total consumed capacity: ${result.data.ConsumedCapacity.CapacityUnits}`);
             }
@@ -323,6 +346,9 @@ class DB {
         } while (!completedScan);
 
         if (this.#capacityReporting) {
+            if (this.#capacityReporterCallback) {
+                this.#capacityReporterCallback('DB:query', JSON.stringify(params), totalConsumedCapacity);
+            }
             console.log(`DB:Query - Params: ${JSON.stringify(params)}`);
             console.log(`DB:Query - Total consumed capacity: ${totalConsumedCapacity}`);
         }
@@ -375,6 +401,9 @@ class DB {
         } while (!completedScan);
 
         if (this.#capacityReporting) {
+            if (this.#capacityReporterCallback) {
+                this.#capacityReporterCallback('DB:scan', JSON.stringify(params), totalConsumedCapacity);
+            }
             console.log(`DB:Scan - Params: ${JSON.stringify(params)}`);
             console.log(`DB:Scan - Total consumed capacity: ${totalConsumedCapacity}`);
         }
@@ -429,6 +458,9 @@ class DB {
         } while (!completedScan);
 
         if (this.#capacityReporting) {
+            if (this.#capacityReporterCallback) {
+                this.#capacityReporterCallback('DB:executeStatement', JSON.stringify(params), totalConsumedCapacity);
+            }
             console.log(`DB:executeStatement - Params: ${JSON.stringify(params)}`);
             console.log(`DB:executeStatement - Total consumed capacity: ${totalConsumedCapacity}`);
         }

@@ -8,6 +8,12 @@ const { v4: uuids4 } = require('uuid');
 //const { DynamoDbClient } = require('@danielyaghil/aws-helpers');
 const { DynamoDbClient } = require('../src/index');
 
+function reportConsumption(method, parameters, consumedCapacity) {
+  console.log(
+    `Consumed capacity for ${method} ${parameters}: ${consumedCapacity}`
+  );
+}
+
 async function main() {
   const tableName = 'aws-helpers-sample';
 
@@ -16,7 +22,7 @@ async function main() {
   );
 
   const dynamoDbClient = DynamoDbClient.instance();
-  dynamoDbClient.setConsumedCapacityReporting(true);
+  dynamoDbClient.setConsumedCapacityReporting(true, reportConsumption);
 
   const pk = uuids4();
 

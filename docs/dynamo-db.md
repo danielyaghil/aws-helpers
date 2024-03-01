@@ -29,7 +29,7 @@ const client = DynamoDbClient.instance();
 
 ### Analyze consumed capacity
 
-To analyze the consumed capacity of a Dynamo DB operation, you need to call the "setConsumedCapacityReporting" method.
+To analyze the consumed capacity of a Dynamo DB operation, you need to call the "setConsumedCapacityReporting" method and set the capacity reporting to true.
 After calling, all all to the "get", "set", "delete", "query", "scan" and "executeStatement" methods will log the consumed capacity of the operation to the console in the following format:
 
 ```cli
@@ -40,12 +40,30 @@ DB:delete - Param {"TableName":"aws-helpers-sample","Key":{"pk":"05eed023-3567-4
 DB:delete - Total consumed capacity: 1
 ```
 
+On top of it, it is possible to provide a callback function used to collect the consumed capacity data.
+The callback function should have the following signature:
+
+```javascript
+function <functionName> (method, params, capacity)
+With:
+- method: the name of the method that was called
+- params: the parameters that were passed to the method as string
+- capacity: the consumed capacity of the operation
+```
+
+Where:
+
 E.g.:
 
 ```javascript
 const { DynamoDbClient } = require('@danielyaghil/aws-helpers');
 const client = DynamoDbClient.instance();
-client.setConsumedCapacityReporting(true);
+
+function reportCapacityCallback(method, params, capacity) {
+  console.log(`DB:${method} - Param ${params}: ${capacity}`);
+}
+
+client.setConsumedCapacityReporting(true, reportCapacityCallback);
 ```
 
 ### Set an entry in a Dynamo DB table
