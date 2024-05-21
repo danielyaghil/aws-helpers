@@ -4,8 +4,8 @@
 
 require('dotenv').config({ path: './.env', debug: true });
 var fs = require('fs');
-const { S3Client } = require('@danielyaghil/aws-helpers');
-//const { S3Client } = require('../src/index');
+//const { S3Client } = require('@danielyaghil/aws-helpers');
+const { S3Client } = require('../src/index');
 
 async function main() {
   const s3Client = S3Client.instance();
@@ -94,6 +94,42 @@ async function main() {
     console.log(
       'Text of aws-helpers-sample/sample-from-file.txt  text:' + content
     );
+  }
+
+  //put as text ina folder
+  success = await s3Client.put(
+    'aws-helpers-sample',
+    'folder/sample-from-text.txt',
+    'private',
+    'Example text to be saved in s3'
+  );
+  if (!success) {
+    console.error('Error writing text to s3');
+    return;
+  } else {
+    console.log(
+      `Put aws-helpers-sample/folder/sample-from-text.txt success: ${success}`
+    );
+  }
+
+  //remove object
+  success = await s3Client.delete('aws-helpers-sample', 'sample-from-text.txt');
+  if (!success) {
+    console.error('Error deleting object from s3');
+    return;
+  } else {
+    console.log(
+      `Delete aws-helpers-sample/sample-from-text.txt success: ${success}`
+    );
+  }
+
+  //remove folder
+  success = await s3Client.delete('aws-helpers-sample', 'folder');
+  if (!success) {
+    console.error('Error deleting folder from s3');
+    return;
+  } else {
+    console.log(`Delete aws-helpers-sample/folder success: ${success}`);
   }
 }
 
