@@ -7,7 +7,8 @@
     "sample-dynamo": "node ./sample-dynamo-db.js",
     "sample-secrets": "node ./sample-secrets.js",
     "sample-cognito": "node ./sample-cognito.js",
-    "sample-sns": "node ./sample-sns.js"
+    "sample-sns": "node ./sample-sns.js",
+    "sample-device-farm": "node --inspect ./sample-device-farm.js"
   },
   "repository": {
     "type": "git",
