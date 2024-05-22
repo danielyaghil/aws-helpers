@@ -84,3 +84,8 @@ Please find usage details [here](cognito.md).
 
 A simplified interface to AWS SNS.  
 Please find usage details [here](sns.md).
+
+#### Device Farm
+
+A simplified interface to AWS Device Farm.
+Please find usage details [here](device-farm.md).

@@ -52,7 +52,7 @@ async function main() {
     console.error('Error listing uploads');
     return;
   } else {
-    console.log('Androi App Uploads:');
+    console.log('Android App Uploads:');
     for (let upload of androidAppUploads) {
       console.log(
         ` ${upload.name} :  ${upload.arn} : ${upload.status} : ${upload.created} : ${upload.type} :${upload.contentType} } : ${upload.category}`
@@ -132,12 +132,12 @@ async function main() {
   console.log('====\n');
 
   //schedule run
-  const runName = 'Sample Run';
+  let runName = 'Sample Run';
   const devicePoolArn = devicePools[0].arn;
   const appArn = appUpload.uploadArn;
   const testPackageArn = testPackageUpload.uploadArn;
   const testSpecArn = specUpload.uploadArn;
-  const runSchedule = await deviceFarmClient.scheduleRun(
+  let runSchedule = await deviceFarmClient.scheduleRun(
     runName,
     projectArn,
     devicePoolArn,
@@ -152,11 +152,11 @@ async function main() {
   let run;
   let time = 0;
   do {
-    await new Promise((resolve) => setTimeout(resolve, 15000));
-    time += 15;
+    await new Promise((resolve) => setTimeout(resolve, 30000));
+    time += 30;
     run = await deviceFarmClient.getRun(runSchedule.arn);
     console.log(`Run status "${runName}": ${run.status} - ${run.result}`);
-  } while (run.status !== 'COMPLETED' && time < 360);
+  } while (run.status !== 'COMPLETED' && time < 390);
   console.log(`Run "${runName}":`, JSON.stringify(run));
   console.log('====\n');
 
@@ -179,7 +179,7 @@ async function main() {
   console.log(`Run status "${runName}": ${run.status} - ${run.result}`);
 
   //stop run
-  const stopRun = await deviceFarmClient.stopRun(run.arn);
+  const stopRun = await deviceFarmClient.stopRun(runSchedule.arn);
   console.log(`Stop Run "${runName}":`, stopRun);
   console.log('====\n');
   do {

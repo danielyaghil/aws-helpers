@@ -291,7 +291,7 @@ class AWSDeviceFarm extends AWSBase {
         const command = new GetRunCommand(input);
         const data = await this.applyCommand(command);
         if (data && data.$metadata.httpStatusCode == 200) {
-            let output = { run: data.run };
+            let output = data.run;
             if (data.run.status == 'COMPLETED') {
                 const runArn = data.run.arn;
                 const listJobs = await this.listJobs(runArn);
