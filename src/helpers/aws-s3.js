@@ -1,4 +1,10 @@
-const { S3Client, GetObjectCommand, PutObjectCommand, DeleteObjectCommand } = require('@aws-sdk/client-s3');
+const {
+    S3Client,
+    GetObjectCommand,
+    PutObjectCommand,
+    DeleteObjectCommand,
+    ListObjectsV2Command
+} = require('@aws-sdk/client-s3');
 const mime = require('mime');
 const AWSBase = require('./aws-base');
 
@@ -66,6 +72,43 @@ class AWSS3 extends AWSBase {
             return true;
         }
         return false;
+    }
+
+    async list(bucket, prefix = '', startAfterKey = '', maxKeys = 1000) {
+        const params = {
+            Bucket: bucket
+        };
+
+        if (prefix) {
+            params.Prefix = prefix;
+        }
+
+        if (startAfterKey) {
+            params.StartAfter = startAfterKey;
+        }
+
+        let results = [];
+        let completed = false;
+        do {
+            const cmd = new ListObjectsV2Command(params);
+            let data = await this.applyCommand(cmd);
+            if (data && data.$metadata.httpStatusCode == 200) {
+                if (maxKeys == 0 || results.length + data.Contents.length < maxKeys) {
+                    results = results.concat(data.Contents);
+                } else {
+                    results = results.concat(data.Contents.slice(0, maxKeys - results.length));
+                }
+            } else {
+                break;
+            }
+            if (data.IsTruncated && data.NextContinuationToken) {
+                params.ContinuationToken = data.NextContinuationToken;
+            } else {
+                completed = true;
+            }
+        } while (!completed && results.length < maxKeys);
+
+        return results;
     }
 }
 

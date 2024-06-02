@@ -112,25 +112,72 @@ async function main() {
     );
   }
 
-  //remove object
-  success = await s3Client.delete('aws-helpers-sample', 'sample-from-text.txt');
-  if (!success) {
-    console.error('Error deleting object from s3');
+  //list ListObjectsV2Command
+  let list = await s3Client.list('aws-helpers-sample');
+  if (!list) {
+    console.error('Error listing objects from s3');
+    return;
+  } else {
+    console.log('List of objects in aws-helpers-sample bucket:');
+    list.forEach((element) => {
+      console.log(`- ${element.Key}`);
+    });
+  }
+
+  list = await s3Client.list('aws-helpers-sample', 'folder');
+  if (!list) {
+    console.error('Error listing objects from s3');
+    return;
+  } else {
+    console.log('List of objects in aws-helpers-sample/folder:');
+    list.forEach((element) => {
+      console.log(`- ${element.Key}`);
+    });
+  }
+
+  list = await s3Client.list('aws-helpers-sample', '', '', 2);
+  if (!list) {
+    console.error('Error listing objects from s3');
+    return;
+  } else {
+    console.log('List of objects in aws-helpers-sample with max 2:');
+    list.forEach((element) => {
+      console.log(`- ${element.Key}`);
+    });
+  }
+
+  list = await s3Client.list('aws-helpers-sample', '', 'sample-from-file.txt');
+  if (!list) {
+    console.error('Error listing objects from s3');
     return;
   } else {
     console.log(
-      `Delete aws-helpers-sample/sample-from-text.txt success: ${success}`
+      'List of objects in aws-helpers-sample with start key "sample-from-file.txt":'
     );
+    list.forEach((element) => {
+      console.log(`- ${element.Key}`);
+    });
   }
 
+  //remove object
+  // success = await s3Client.delete('aws-helpers-sample', 'sample-from-text.txt');
+  // if (!success) {
+  //   console.error('Error deleting object from s3');
+  //   return;
+  // } else {
+  //   console.log(
+  //     `Delete aws-helpers-sample/sample-from-text.txt success: ${success}`
+  //   );
+  // }
+
   //remove folder
-  success = await s3Client.delete('aws-helpers-sample', 'folder');
-  if (!success) {
-    console.error('Error deleting folder from s3');
-    return;
-  } else {
-    console.log(`Delete aws-helpers-sample/folder success: ${success}`);
-  }
+  // success = await s3Client.delete('aws-helpers-sample', 'folder');
+  // if (!success) {
+  //   console.error('Error deleting folder from s3');
+  //   return;
+  // } else {
+  //   console.log(`Delete aws-helpers-sample/folder success: ${success}`);
+  // }
 }
 
 main();

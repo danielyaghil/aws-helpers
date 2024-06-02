@@ -3,7 +3,7 @@
   "version": "0.9.0",
   "description": "Samples files for AWS helpers",
   "scripts": {
-    "sample-s3": "node ./sample-s3.js",
+    "sample-s3": "node --inspect ./sample-s3.js",
     "sample-dynamo": "node ./sample-dynamo-db.js",
     "sample-secrets": "node ./sample-secrets.js",
     "sample-cognito": "node ./sample-cognito.js",
