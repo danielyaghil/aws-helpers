@@ -93,7 +93,7 @@ class AWSS3 extends AWSBase {
             const cmd = new ListObjectsV2Command(params);
             let data = await this.applyCommand(cmd);
             if (data && data.$metadata.httpStatusCode == 200) {
-                if (results.length + data.Contents.length < maxKeys) {
+                if (maxKeys == 0 || results.length + data.Contents.length < maxKeys) {
                     results = results.concat(data.Contents);
                 } else {
                     results = results.concat(data.Contents.slice(0, maxKeys - results.length));
