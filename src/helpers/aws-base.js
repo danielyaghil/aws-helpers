@@ -15,6 +15,10 @@ class AWSBase {
         return AWSBase[AWS_HELPER_CLASS.name];
     }
 
+    get awsClient() {
+        return this.#awsClient;
+    }
+
     async processData(data) {
         return data;
     }

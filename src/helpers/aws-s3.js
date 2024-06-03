@@ -5,6 +5,7 @@ const {
     DeleteObjectCommand,
     ListObjectsV2Command
 } = require('@aws-sdk/client-s3');
+const { getSignedUrl } = require('@aws-sdk/s3-request-presigner');
 const mime = require('mime');
 const AWSBase = require('./aws-base');
 
@@ -35,6 +36,17 @@ class AWSS3 extends AWSBase {
             }
         }
         return null;
+    }
+
+    async getSignedUrl(bucket, key, expiryInSeconds) {
+        const params = {
+            Bucket: bucket,
+            Key: key
+        };
+
+        const command = new GetObjectCommand(params);
+        const url = await getSignedUrl(this.awsClient, command, { expiresIn: expiryInSeconds });
+        return url;
     }
 
     //ACL= "private" || "public-read" || "public-read-write" || "authenticated-read" || "aws-exec-read" || "bucket-owner-read" || "bucket-owner-full-control"

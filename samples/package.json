@@ -25,6 +25,7 @@
   "homepage": "https://github.com/danielyaghil/aws-helpers/tree/main#readme",
   "dependencies": {
     "@danielyaghil/aws-helpers": "^0.9.46",
+    "axios": "^1.7.2",
     "dotenv": "^16.3.1",
     "uuid": "^9.0.1"
   }
