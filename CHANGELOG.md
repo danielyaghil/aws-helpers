@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.9.63 (2024-06-05)
+
+- S3Client: Fix issue for lists in some cases where the filter returns empty result.
+
 ## 0.9.62 (2024-06-04)
 
 - S3Client: Add support for getSignedUrl method.  
