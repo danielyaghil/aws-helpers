@@ -217,6 +217,11 @@ class AWSDeviceFarm extends AWSBase {
                 count < 10
             );
 
+            if (uploadStatus.status != 'SUCCEEDED') {
+                console.error(`Upload failed:  status "${uploadStatus.status}" - error "${uploadStatus.message}"`);
+                return null;
+            }
+
             const output = {
                 uploadArn: uploadOutput.arn,
                 uploadStatus: uploadStatus.status
