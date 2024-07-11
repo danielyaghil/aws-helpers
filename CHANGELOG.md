@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.9.64 (2024-06-06)
+
+- DeviceFarmClient: Fix upload so that only if it reaches "SUCCEEDED" status it will retuns the detail of uploaded file.  
+  This is to avoid returning the detail of the upload if it is still in progress or "FAILED".
+
 ## 0.9.63 (2024-06-05)
 
 - S3Client: Fix issue for lists in some cases where the filter returns empty result.
