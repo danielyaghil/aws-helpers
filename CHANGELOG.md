@@ -1,6 +1,6 @@
 # Changelog
 
-## 0.9.65 (2024-06-07)
+## 0.9.66 (2024-06-07)
 
 - DeviceFarmClient: Update list uploads so that by default it returns only upload with status "SUCCEEDED".  
   You can now pass a filter to get all uploads or only the ones with a specific status.
