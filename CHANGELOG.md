@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.9.65 (2024-06-07)
+
+- DeviceFarmClient: Update list uploads so that by default it returns only upload with status "SUCCEEDED".  
+  You can now pass a filter to get all uploads or only the ones with a specific status.
+  This is to avoid returning the detail of the upload if it is still in progress or "FAILED".
+  When using generic filter (not category one, you can get any status you require).  
+  Details can be found in [device farm helper documentation](https://github.com/danielyaghil/aws-helpers/tree/main/docs/device-farm.md)
+
 ## 0.9.64 (2024-06-06)
 
 - DeviceFarmClient: Fix upload so that only if it reaches "SUCCEEDED" status it will retuns the detail of uploaded file.  
