@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.9.67 (2024-06-08)
+
+- DynamoDbClient: add ability to set consistent read.  
+  You can now set the consistent read to true or false.  
+  When set to true, the client will use consistent read for all get, query, scan and execute statement operations.  
+  The default value is false.  
+  Details can be found in [dynamo db helper documentation](https://github.com/danielyaghil/aws-helpers/tree/main/docs/dynamo-db.md).
+
 ## 0.9.66 (2024-06-07)
 
 - DeviceFarmClient: Update list uploads so that by default it returns only upload with status "SUCCEEDED".  
