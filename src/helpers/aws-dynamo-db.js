@@ -340,7 +340,7 @@ class DB {
             params.ScanIndexForward = false;
         }
 
-        if (this.#useConsistentRead) {
+        if (this.#useConsistentRead && !index) {
             params.ConsistentRead = true;
         }
 
@@ -399,7 +399,7 @@ class DB {
             params.IndexName = index;
         }
 
-        if (this.#useConsistentRead) {
+        if (this.#useConsistentRead && !index) {
             params.ConsistentRead = true;
         }
 
@@ -460,7 +460,7 @@ class DB {
             Statement: query
         };
 
-        if (this.#useConsistentRead) {
+        if (this.#useConsistentRead && !index) {
             params.ConsistentRead = true;
         }
 

@@ -1,6 +1,6 @@
 # Changelog
 
-## 0.9.67 (2024-06-08)
+## 0.9.68 (2024-07-23)
 
 - DynamoDbClient: add ability to set consistent read.  
   You can now set the consistent read to true or false.  
