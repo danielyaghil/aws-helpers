@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.9.70 (2024-11-11)
+
+- Added SqsClient: it provides a set of methods to simplify interaction with AWS SQS API and existing queues.  
+  Details can be found in [sqs helper documentation](https://github.com/danielyaghil/aws-helpers/tree/main/docs/sqs.md)
+
 ## 0.9.68 (2024-07-23)
 
 - DynamoDbClient: add ability to set consistent read.  

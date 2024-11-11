@@ -8,7 +8,9 @@
     "sample-secrets": "node ./sample-secrets.js",
     "sample-cognito": "node ./sample-cognito.js",
     "sample-sns": "node ./sample-sns.js",
-    "sample-device-farm": "node --inspect ./sample-device-farm.js"
+    "sample-sqs": "node --inspect ./sample-sqs.js",
+    "sample-device-farm": "node --inspect ./sample-device-farm.js",
+    "sample-df-tg": "node --inspect ./sample-device-farm-testgrid.js"
   },
   "repository": {
     "type": "git",

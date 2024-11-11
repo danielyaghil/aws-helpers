@@ -25,6 +25,8 @@ Specific configuration for each sample at the top of the file.
 - [S3](./sample-s3.js)
 - [DynamoDB](./sample-dynamodb.js)
 - [Cognito](./sample-cognito.js)
+- [SNS](./sample-sns.js)
+- [SQS](./sample-sqs.js)
 
 ## Running the samples
 

@@ -11,7 +11,11 @@ const {
     DeleteRunCommand,
     ListJobsCommand,
     ListSuitesCommand,
-    ListArtifactsCommand
+    ListArtifactsCommand,
+    CreateTestGridUrlCommand,
+    ListTestGridSessionsCommand,
+    GetTestGridSessionCommand,
+    ListTestGridSessionArtifactsCommand
 } = require('@aws-sdk/client-device-farm');
 const AWSBase = require('./aws-base');
 const axios = require('axios');
@@ -24,6 +28,8 @@ class AWSDeviceFarm extends AWSBase {
     static instance(region = 'us-west-2') {
         return super.instance(AWSDeviceFarm, region);
     }
+
+    //#region mobile devices
 
     //#region lists
 
@@ -349,6 +355,65 @@ class AWSDeviceFarm extends AWSBase {
         }
 
         return false;
+    }
+
+    //#endregion
+
+    //#endregion
+
+    //#region web devices
+
+    async createTestGridSession(projectArn, expiredInSeconds = 300) {
+        const params = {
+            projectArn: projectArn,
+            expiresInSeconds: expiredInSeconds
+        };
+        const cmd = new CreateTestGridUrlCommand(params);
+        let data = await this.applyCommand(cmd);
+        if (data && data.$metadata.httpStatusCode == 200) {
+            const output = {
+                url: data.url,
+                expires: data.expires
+            };
+            return output;
+        }
+        return null;
+    }
+
+    async listTestGridSessions(projectArn) {
+        const params = {
+            projectArn: projectArn
+        };
+        const cmd = new ListTestGridSessionsCommand(params);
+        let data = await this.applyCommand(cmd);
+        if (data && data.$metadata.httpStatusCode == 200) {
+            return data.sessions;
+        }
+        return null;
+    }
+
+    async getTestGridSession(sessionArn) {
+        const params = {
+            sessionArn: sessionArn
+        };
+        const cmd = new GetTestGridSessionCommand(params);
+        let data = await this.applyCommand(cmd);
+        if (data && data.$metadata.httpStatusCode == 200) {
+            return data.testGridSession;
+        }
+        return null;
+    }
+
+    async listTestGridSessionArtifacts(sessionArn) {
+        const params = {
+            sessionArn: sessionArn
+        };
+        const cmd = new ListTestGridSessionArtifactsCommand(params);
+        let data = await this.applyCommand(cmd);
+        if (data && data.$metadata.httpStatusCode == 200) {
+            return data.artifacts;
+        }
+        return null;
     }
 
     //#endregion
