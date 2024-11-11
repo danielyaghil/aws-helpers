@@ -23,6 +23,13 @@ class AWSBase {
         return data;
     }
 
+    async filterError(error) {
+        if (error.$metadata.httpStatusCode == 404) {
+            return null;
+        }
+        return error;
+    }
+
     async applyCommand(command) {
         try {
             const data = await this.#awsClient.send(command);
@@ -31,7 +38,9 @@ class AWSBase {
             }
         } catch (error) {
             // error handling.
-            console.error(error);
+            if (this.filterError(error)) {
+                console.error(error);
+            }
         }
         return null;
     }
