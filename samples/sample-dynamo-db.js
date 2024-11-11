@@ -24,6 +24,7 @@ async function main() {
 
   const dynamoDbClient = DynamoDbClient.instance();
   dynamoDbClient.setConsumedCapacityReporting(true, reportConsumption);
+  // dynamoDbClient.setConsistentRead(true);
 
   const pk = uuids4();
 

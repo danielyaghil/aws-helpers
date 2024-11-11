@@ -5,6 +5,7 @@ const {
     DeleteObjectCommand,
     ListObjectsV2Command
 } = require('@aws-sdk/client-s3');
+const { getSignedUrl } = require('@aws-sdk/s3-request-presigner');
 const mime = require('mime');
 const AWSBase = require('./aws-base');
 
@@ -28,6 +29,15 @@ class AWSS3 extends AWSBase {
         if (data && data.$metadata.httpStatusCode == 200 && data.Body) {
             if (outputType == 'txt' || outputType == 'text') {
                 return await data.Body.transformToString();
+            } else if (outputType == 'json') {
+                const jsonString = await data.Body.transformToString();
+                try {
+                    const json = JSON.parse(jsonString);
+                    return json;
+                } catch (e) {
+                    console.error('Error parsing json:', e);
+                    return null;
+                }
             } else if (outputType == 'byte-array') {
                 return await data.Body.transformToByteArray();
             } else {
@@ -35,6 +45,17 @@ class AWSS3 extends AWSBase {
             }
         }
         return null;
+    }
+
+    async getSignedUrl(bucket, key, expiryInSeconds) {
+        const params = {
+            Bucket: bucket,
+            Key: key
+        };
+
+        const command = new GetObjectCommand(params);
+        const url = await getSignedUrl(this.awsClient, command, { expiresIn: expiryInSeconds });
+        return url;
     }
 
     //ACL= "private" || "public-read" || "public-read-write" || "authenticated-read" || "aws-exec-read" || "bucket-owner-read" || "bucket-owner-full-control"
@@ -93,10 +114,12 @@ class AWSS3 extends AWSBase {
             const cmd = new ListObjectsV2Command(params);
             let data = await this.applyCommand(cmd);
             if (data && data.$metadata.httpStatusCode == 200) {
-                if (maxKeys == 0 || results.length + data.Contents.length < maxKeys) {
-                    results = results.concat(data.Contents);
-                } else {
-                    results = results.concat(data.Contents.slice(0, maxKeys - results.length));
+                if (data.Contents && data.Contents.length > 0) {
+                    if (maxKeys == 0 || results.length + data.Contents.length < maxKeys) {
+                        results = results.concat(data.Contents);
+                    } else {
+                        results = results.concat(data.Contents.slice(0, maxKeys - results.length));
+                    }
                 }
             } else {
                 break;

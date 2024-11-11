@@ -67,6 +67,22 @@ function reportCapacityCallback(table, method, params, capacity) {
 client.setConsumedCapacityReporting(true, reportCapacityCallback);
 ```
 
+### Use consistent reading
+
+To use consistent reading, you need to call the "setConsistentRead" method and set the consistent reading to true.
+
+E.g.:
+
+```javascript
+const { DynamoDbClient } = require('@danielyaghil/aws-helpers');
+const client = DynamoDbClient.instance();
+client.setConsistentRead(true);
+```
+
+All get, query, scan and executeStatement operations will be performed with consistent reading.
+
+Note: as consistent read is not supported for GSI, the consistent read will be ignored if an index is provided (at this point we do not distinguish betwwen GSI and LSI so all index usage will automatically disable consistent read).
+
 ### Set an entry in a Dynamo DB table
 
 To set an entry in a Dynamo DB table, you need to call the "set" method with the table name and object as parameters.  

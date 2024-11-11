@@ -3,7 +3,8 @@
 // Run: npm run sample-s3
 
 require('dotenv').config({ path: './.env', debug: true });
-var fs = require('fs');
+const fs = require('fs');
+const axios = require('axios');
 //const { S3Client } = require('@danielyaghil/aws-helpers');
 const { S3Client } = require('../src/index');
 
@@ -63,6 +64,39 @@ async function main() {
     console.log(
       'Text of aws-helpers-sample/sample-from-file.txt s text:' + content
     );
+  }
+
+  //retrive with signed URL and download
+  const url = await s3Client.getSignedUrl(
+    'aws-helpers-sample',
+    'sample-from-file.txt',
+    60
+  );
+  if (!url) {
+    console.error('Error getting signed url');
+    return;
+  } else {
+    console.log(
+      'Signed URL for aws-helpers-sample/sample-from-file.txt:' + url
+    );
+    // Download the file using axios
+    const response = await axios({
+      url,
+      method: 'GET',
+      responseType: 'stream',
+    });
+
+    const writer = fs.createWriteStream('./downloads/file.txt');
+
+    response.data.pipe(writer);
+
+    const promise = new Promise((resolve, reject) => {
+      writer.on('finish', resolve);
+      writer.on('error', reject);
+    });
+    await promise.then(() => {
+      console.log('File downloaded successfully');
+    });
   }
 
   //put a text
@@ -160,24 +194,24 @@ async function main() {
   }
 
   //remove object
-  // success = await s3Client.delete('aws-helpers-sample', 'sample-from-text.txt');
-  // if (!success) {
-  //   console.error('Error deleting object from s3');
-  //   return;
-  // } else {
-  //   console.log(
-  //     `Delete aws-helpers-sample/sample-from-text.txt success: ${success}`
-  //   );
-  // }
+  success = await s3Client.delete('aws-helpers-sample', 'sample-from-text.txt');
+  if (!success) {
+    console.error('Error deleting object from s3');
+    return;
+  } else {
+    console.log(
+      `Delete aws-helpers-sample/sample-from-text.txt success: ${success}`
+    );
+  }
 
   //remove folder
-  // success = await s3Client.delete('aws-helpers-sample', 'folder');
-  // if (!success) {
-  //   console.error('Error deleting folder from s3');
-  //   return;
-  // } else {
-  //   console.log(`Delete aws-helpers-sample/folder success: ${success}`);
-  // }
+  success = await s3Client.delete('aws-helpers-sample', 'folder');
+  if (!success) {
+    console.error('Error deleting folder from s3');
+    return;
+  } else {
+    console.log(`Delete aws-helpers-sample/folder success: ${success}`);
+  }
 }
 
 main();

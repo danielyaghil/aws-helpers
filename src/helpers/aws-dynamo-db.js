@@ -30,6 +30,7 @@ class DB {
     #existingTables = null;
     #capacityReporting = false;
     #capacityReporterCallback = null;
+    #useConsistentRead = false;
 
     constructor(region) {
         this.#dynamoDbClient = new DynamoDBClient({
@@ -68,6 +69,11 @@ class DB {
         console.log(`Report consumed capacity: ${this.#capacityReporting ? 'on' : 'off'}`);
     }
 
+    setConsistentRead(consistentRead) {
+        this.#useConsistentRead = consistentRead;
+        console.log(`Consistent read: ${this.#useConsistentRead ? 'on' : 'off'}`);
+    }
+
     async #applyCommand(command) {
         try {
             const data = await this.#dynamoDbClient.send(command);
@@ -91,7 +97,9 @@ class DB {
             }
             const data = await this.#dynamoDbDocumentClient.send(command);
             if (data.$metadata.httpStatusCode !== 200) {
-                console.log(`Error in command : ${data}`);
+                console.log(
+                    `DynamoDbClient::Error in command ${JSON.stringify(command)} : reponse ${JSON.stringify(data)}`
+                );
                 return new DbCommandResult(false, data);
             } else {
                 return new DbCommandResult(true, data);
@@ -100,7 +108,9 @@ class DB {
             if (err.name == 'ResourceNotFoundException') {
                 return new DbCommandResult(true, null);
             } else {
-                console.log(err);
+                console.log(
+                    `DynamoDbClient::exception error ${JSON.stringify(err)} for command ${JSON.stringify(command)}`
+                );
                 return new DbCommandResult(false, null);
             }
         }
@@ -236,6 +246,10 @@ class DB {
             Key: key
         };
 
+        if (this.#useConsistentRead) {
+            params.ConsistentRead = true;
+        }
+
         const command = new GetCommand(params);
         let result = await this.#applyDocumentCommand(command);
         if (result.success && result.data && result.data.Item) {
@@ -326,6 +340,10 @@ class DB {
             params.ScanIndexForward = false;
         }
 
+        if (this.#useConsistentRead && !index) {
+            params.ConsistentRead = true;
+        }
+
         let completedScan = firstPageOnly;
         let queriedItems = [];
         let totalConsumedCapacity = 0;
@@ -379,6 +397,10 @@ class DB {
         }
         if (index) {
             params.IndexName = index;
+        }
+
+        if (this.#useConsistentRead && !index) {
+            params.ConsistentRead = true;
         }
 
         let completedScan = firstPageOnly;
@@ -437,6 +459,10 @@ class DB {
         let params = {
             Statement: query
         };
+
+        if (this.#useConsistentRead && !index) {
+            params.ConsistentRead = true;
+        }
 
         let completedScan = firstPageOnly;
         let selectedItems = [];

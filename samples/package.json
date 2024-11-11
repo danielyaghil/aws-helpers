@@ -4,7 +4,7 @@
   "description": "Samples files for AWS helpers",
   "scripts": {
     "sample-s3": "node --inspect ./sample-s3.js",
-    "sample-dynamo": "node ./sample-dynamo-db.js",
+    "sample-dynamo": "node --inspect ./sample-dynamo-db.js",
     "sample-secrets": "node ./sample-secrets.js",
     "sample-cognito": "node ./sample-cognito.js",
     "sample-sns": "node ./sample-sns.js",
@@ -27,6 +27,7 @@
   "homepage": "https://github.com/danielyaghil/aws-helpers/tree/main#readme",
   "dependencies": {
     "@danielyaghil/aws-helpers": "^0.9.46",
+    "axios": "^1.7.2",
     "dotenv": "^16.3.1",
     "uuid": "^9.0.1"
   }
