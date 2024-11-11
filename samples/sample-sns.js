@@ -1,6 +1,6 @@
 // This sample demonstrates how to use the SnsClient class
 // It requires AWS account with sns access and a SNS topic ARN
-// Run: npm run sample-secrets
+// Run: npm run sample-sns
 
 require('dotenv').config({ path: '.env', debug: true });
 const { SnsClient } = require('@danielyaghil/aws-helpers');

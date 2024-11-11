@@ -1,3 +1,8 @@
+### 0.9.65 (2024-11-11)
+
+- Added SqsClient: it provides a set of methods to simplify interaction with AWS SQS API and existing queues.  
+  Details can be found in [sqs helper documentation](https://github.com/danielyaghil/aws-helpers/tree/main/docs/sqs.md)
+
 ### 0.9.61 (2024-03-02)
 
 - S3Client: Add support for lists in S3Client (based on ListObjectsV2 API)
