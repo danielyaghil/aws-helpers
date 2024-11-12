@@ -69,7 +69,7 @@ class AWSSqs extends AWSBase {
             if (data.Messages && data.Messages.length > 0) {
                 const output = {
                     receiptHandle: data.Messages[0].ReceiptHandle,
-                    message: JSON.parse(data.Messages[0].Body)
+                    body: JSON.parse(data.Messages[0].Body)
                 };
                 return output;
             }
