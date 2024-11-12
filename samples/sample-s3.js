@@ -9,12 +9,14 @@ const axios = require('axios');
 const { S3Client } = require('../src/index');
 
 async function main() {
+  const testBucket = 'aws-helpers-test';
+
   const s3Client = S3Client.instance();
 
   //put a stream
   let stream = fs.createReadStream('assets/sample.txt');
   let success = await s3Client.put(
-    'aws-helpers-sample',
+    testBucket,
     'sample-from-file.txt',
     'private',
     stream
@@ -29,10 +31,7 @@ async function main() {
   }
 
   //retrieve as stream
-  const receiveStream = await s3Client.get(
-    'aws-helpers-sample',
-    'sample-from-file.txt'
-  );
+  const receiveStream = await s3Client.get(testBucket, 'sample-from-file.txt');
   if (!receiveStream) {
     console.error('Error retrieving data stream from s3');
     return;
@@ -52,11 +51,7 @@ async function main() {
   }
 
   //retrieve as text
-  let content = await s3Client.get(
-    'aws-helpers-sample',
-    'sample-from-file.txt',
-    'txt'
-  );
+  let content = await s3Client.get(testBucket, 'sample-from-file.txt', 'txt');
   if (!content) {
     console.error('Error retrieving data from s3');
     return;
@@ -68,7 +63,7 @@ async function main() {
 
   //retrive with signed URL and download
   const url = await s3Client.getSignedUrl(
-    'aws-helpers-sample',
+    testBucket,
     'sample-from-file.txt',
     60
   );
@@ -101,7 +96,7 @@ async function main() {
 
   //put a text
   success = await s3Client.put(
-    'aws-helpers-sample',
+    testBucket,
     'sample-from-text.txt',
     'private',
     'Example text to be saved in s3'
@@ -116,11 +111,7 @@ async function main() {
   }
 
   //retrieve as text
-  content = await s3Client.get(
-    'aws-helpers-sample',
-    'sample-from-text.txt',
-    'text'
-  );
+  content = await s3Client.get(testBucket, 'sample-from-text.txt', 'text');
   if (!content) {
     console.error('Error retrieving data from s3');
     return;
@@ -132,7 +123,7 @@ async function main() {
 
   //put as text ina folder
   success = await s3Client.put(
-    'aws-helpers-sample',
+    testBucket,
     'folder/sample-from-text.txt',
     'private',
     'Example text to be saved in s3'
@@ -147,7 +138,7 @@ async function main() {
   }
 
   //list ListObjectsV2Command
-  let list = await s3Client.list('aws-helpers-sample');
+  let list = await s3Client.list(testBucket);
   if (!list) {
     console.error('Error listing objects from s3');
     return;
@@ -158,7 +149,7 @@ async function main() {
     });
   }
 
-  list = await s3Client.list('aws-helpers-sample', 'folder');
+  list = await s3Client.list(testBucket, 'folder');
   if (!list) {
     console.error('Error listing objects from s3');
     return;
@@ -169,7 +160,7 @@ async function main() {
     });
   }
 
-  list = await s3Client.list('aws-helpers-sample', '', '', 2);
+  list = await s3Client.list(testBucket, '', '', 2);
   if (!list) {
     console.error('Error listing objects from s3');
     return;
@@ -180,7 +171,7 @@ async function main() {
     });
   }
 
-  list = await s3Client.list('aws-helpers-sample', '', 'sample-from-file.txt');
+  list = await s3Client.list(testBucket, '', 'sample-from-file.txt');
   if (!list) {
     console.error('Error listing objects from s3');
     return;
@@ -194,7 +185,7 @@ async function main() {
   }
 
   //remove object
-  success = await s3Client.delete('aws-helpers-sample', 'sample-from-text.txt');
+  success = await s3Client.delete(testBucket, 'sample-from-text.txt');
   if (!success) {
     console.error('Error deleting object from s3');
     return;
@@ -205,12 +196,21 @@ async function main() {
   }
 
   //remove folder
-  success = await s3Client.delete('aws-helpers-sample', 'folder');
+  success = await s3Client.delete(testBucket, 'folder');
   if (!success) {
     console.error('Error deleting folder from s3');
     return;
   } else {
     console.log(`Delete aws-helpers-sample/folder success: ${success}`);
+  }
+
+  //non existing key
+  success = await s3Client.get(testBucket, 'non-existing-key');
+  if (success) {
+    console.error('Error: non-existing-key should not exist');
+    return;
+  } else {
+    console.log('Non-existing-key does not exist');
   }
 }
 

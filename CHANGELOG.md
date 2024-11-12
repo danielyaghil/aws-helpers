@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.9.71 (2024-11-12)
+
+- All clients: 404 errors are filtered out and not displayed anymore.  
+  This is to avoid displaying 404 errors in the logs when they are expected.  
+  This is a breaking change for all clients.
+
 ## 0.9.70 (2024-11-11)
 
 - Added SqsClient: it provides a set of methods to simplify interaction with AWS SQS API and existing queues.  

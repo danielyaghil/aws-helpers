@@ -25,9 +25,9 @@ class AWSBase {
 
     async filterError(error) {
         if (error.$metadata.httpStatusCode == 404) {
-            return null;
+            return true;
         }
-        return error;
+        return false;
     }
 
     async applyCommand(command) {
@@ -38,7 +38,8 @@ class AWSBase {
             }
         } catch (error) {
             // error handling.
-            if (this.filterError(error)) {
+            const isFiletered = await this.filterError(error);
+            if (!isFiletered) {
                 console.error(error);
             }
         }
