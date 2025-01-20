@@ -46,11 +46,15 @@ class AWSSqs extends AWSBase {
         return attributes ? attributes.ApproximateNumberOfMessagesDelayed : 0;
     }
 
-    async sendMessage(queueUrl, json) {
+    async sendMessage(queueUrl, json, options) {
         const command = new SendMessageCommand({
             QueueUrl: queueUrl,
             MessageBody: JSON.stringify(json)
         });
+
+        if (options && options.delay) {
+            command.DelaySeconds = options.delay;
+        }
 
         const data = await this.applyCommand(command);
         if (data && data.$metadata.httpStatusCode == 200) {
@@ -59,22 +63,43 @@ class AWSSqs extends AWSBase {
         return false;
     }
 
-    async receiveMessage(queueUrl) {
+    async #receiveInternal(queueUrl, maxMessages) {
         const command = new ReceiveMessageCommand({
-            QueueUrl: queueUrl
+            QueueUrl: queueUrl,
+            MaxNumberOfMessages: maxMessages,
+            MessageSystemAttributeNames: [
+                'ApproximateReceiveCount',
+                'ApproximateFirstReceiveTimestamp',
+                'SentTimestamp'
+            ]
         });
 
         const data = await this.applyCommand(command);
         if (data && data.$metadata.httpStatusCode == 200) {
-            if (data.Messages && data.Messages.length > 0) {
-                const output = {
-                    receiptHandle: data.Messages[0].ReceiptHandle,
-                    body: JSON.parse(data.Messages[0].Body)
-                };
+            if (data.Messages) {
+                const output = [];
+                for (let i = 0; i < data.Messages.length; i++) {
+                    const outputItem = {
+                        receiptHandle: data.Messages[0].ReceiptHandle,
+                        body: JSON.parse(data.Messages[0].Body),
+                        receivedCount: data.Messages[0].Attributes.ApproximateReceiveCount,
+                        receivedFirstTimestamp: data.Messages[0].Attributes.ApproximateFirstReceiveTimestamp
+                    };
+                    output.push(outputItem);
+                }
                 return output;
             }
         }
         return null;
+    }
+
+    async receiveMessage(queueUrl) {
+        const output = await this.#receiveInternal(queueUrl, 1);
+        return output ? output[0] : null;
+    }
+
+    async receiveMessages(queueUrl, maxMessages = 10) {
+        return this.#receiveInternal(queueUrl, maxMessages);
     }
 
     async changeMessageVisibility(queueUrl, receiptHandle, visibilityTimeout) {
