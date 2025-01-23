@@ -49,12 +49,9 @@ class AWSSqs extends AWSBase {
     async sendMessage(queueUrl, json, options) {
         const command = new SendMessageCommand({
             QueueUrl: queueUrl,
-            MessageBody: JSON.stringify(json)
+            MessageBody: JSON.stringify(json),
+            DelaySeconds: options && options.delay ? options.delay : 0
         });
-
-        if (options && options.delay) {
-            command.DelaySeconds = options.delay;
-        }
 
         const data = await this.applyCommand(command);
         if (data && data.$metadata.httpStatusCode == 200) {
