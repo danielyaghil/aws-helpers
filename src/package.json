@@ -1,6 +1,6 @@
 {
     "name": "@danielyaghil/aws-helpers",
-    "version": "0.9.74",
+    "version": "0.9.75",
     "description": "A set of helpers to simplify usage of AWS Javascript v3 API",
     "main": "index.js",
     "scripts": {
@@ -26,15 +26,16 @@
     },
     "homepage": "https://github.com/danielyaghil/aws-helpers/tree/main/docs",
     "dependencies": {
-        "@aws-sdk/client-cognito-identity-provider": "^3.577.0",
-        "@aws-sdk/client-device-farm": "^3.577.0",
-        "@aws-sdk/client-dynamodb": "^3.577.0",
-        "@aws-sdk/client-s3": "^3.577.0",
-        "@aws-sdk/client-secrets-manager": "^3.580.0",
-        "@aws-sdk/client-sns": "^3.577.0",
-        "@aws-sdk/client-sqs": "^3.687.0",
-        "@aws-sdk/lib-dynamodb": "^3.577.0",
-        "@aws-sdk/s3-request-presigner": "^3.588.0",
+        "@aws-sdk/client-cognito-identity-provider": "^3.734.0",
+        "@aws-sdk/client-device-farm": "^3.734.0",
+        "@aws-sdk/client-dynamodb": "^3.734.0",
+        "@aws-sdk/client-ecs": "^3.734.0",
+        "@aws-sdk/client-s3": "^3.735.0",
+        "@aws-sdk/client-secrets-manager": "^3.734.0",
+        "@aws-sdk/client-sns": "^3.734.0",
+        "@aws-sdk/client-sqs": "^3.734.0",
+        "@aws-sdk/lib-dynamodb": "^3.734.0",
+        "@aws-sdk/s3-request-presigner": "^3.735.0",
         "aws-jwt-verify": "^4.0.1",
         "axios": "^1.7.2",
         "mime": "^3.0.0"

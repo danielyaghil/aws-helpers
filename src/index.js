@@ -6,6 +6,7 @@ const AWSCognito = require('./helpers/aws-cognito');
 const AWSSns = require('./helpers/aws-sns');
 const AWSSqs = require('./helpers/aws-sqs');
 const AWSDeviceFarm = require('./helpers/aws-device-farm');
+const AWSEcs = require('./helpers/aws-ecs');
 
 module.exports.SecretsClient = AWSSecrets;
 module.exports.S3Client = AWSS3;
@@ -14,3 +15,4 @@ module.exports.CognitoClient = AWSCognito;
 module.exports.SnsClient = AWSSns;
 module.exports.SqsClient = AWSSqs;
 module.exports.DeviceFarmClient = AWSDeviceFarm;
+module.exports.EcsClient = AWSEcs;

@@ -10,7 +10,8 @@
     "sample-sns": "node ./sample-sns.js",
     "sample-sqs": "node --inspect ./sample-sqs.js",
     "sample-device-farm": "node --inspect ./sample-device-farm.js",
-    "sample-df-tg": "node --inspect ./sample-device-farm-testgrid.js"
+    "sample-df-tg": "node --inspect ./sample-device-farm-testgrid.js",
+    "sample-ecs": "node --inspect ./sample-ecs.js"
   },
   "repository": {
     "type": "git",
