@@ -1,4 +1,4 @@
-const { ECSClient, RunTaskCommand, LaunchType, AssignPublicIp } = require('@aws-sdk/client-ecs');
+const { ECSClient, RunTaskCommand } = require('@aws-sdk/client-ecs');
 const AWSBase = require('./aws-base');
 
 class AWSEcs extends AWSBase {
