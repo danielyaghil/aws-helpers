@@ -193,7 +193,7 @@ class DB {
 
     async #validateDocumentOperation(tableName, obj, method) {
         if (!obj || !tableName) {
-            console.log(`${method} - missing table [${tableName}] or item [${JSON.stringify(obj)}] `);
+            console.log(`${method} - missing table [${tableName}] or item`);
             return false;
         }
 
