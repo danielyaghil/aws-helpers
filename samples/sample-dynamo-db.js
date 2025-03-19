@@ -201,7 +201,7 @@ async function main() {
 
     //#endregion
 
-    //#region Basic operation
+    //#region delete operations
 
     console.log('=====================');
 
@@ -218,6 +218,17 @@ async function main() {
       `Done deleting item from table ${tableName} with pk ${pk} and sk: 0: ${result}`
     );
 
+    console.log('=====================');
+
+    console.log(`Delete items from table ${tableName} with pk: ${pk}`);
+
+    filter = `pk = :pk`;
+    const parameters = {
+      ':pk': pk,
+    };
+    await dynamoDbClient.truncate('TMUserFlows2', filter, parameters, null);
+    console.log('Truncated');
+
     //#endregion
 
     console.log('=====================');
@@ -229,5 +240,4 @@ async function main() {
     console.error('Error:', err);
   }
 }
-
 main();

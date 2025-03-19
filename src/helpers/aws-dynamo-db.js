@@ -2,7 +2,8 @@ const {
     DynamoDBClient,
     CreateTableCommand,
     DeleteTableCommand,
-    ListTablesCommand
+    ListTablesCommand,
+    DescribeTableCommand
 } = require('@aws-sdk/client-dynamodb');
 const {
     DynamoDBDocumentClient,
@@ -185,6 +186,27 @@ class DB {
         }
 
         return false;
+    }
+
+    async describeTable(tableName) {
+        const params = {
+            TableName: tableName
+        };
+        const command = new DescribeTableCommand(params);
+        let result = await this.#applyCommand(command);
+        if (result.success) {
+            const output = {
+                tableName: result.data.Table.TableName,
+                tableStatus: result.data.Table.TableStatus,
+                keySchema: {
+                    partitionKey: result.data.Table.KeySchema.find((element) => element.KeyType === 'HASH')
+                        .AttributeName,
+                    sortKey: result.data.Table.KeySchema.find((element) => element.KeyType === 'RANGE').AttributeName
+                }
+            };
+            return output;
+        }
+        return null;
     }
 
     //#endregion
@@ -500,6 +522,48 @@ class DB {
         }
 
         return selectedItems;
+    }
+
+    async truncate(tableName, filter = null, parameters = null, index = null) {
+        if (!tableName) {
+            console.log(`DB:Truncate - missing tableName`);
+            return false;
+        }
+
+        if (!(await this.existTable(tableName))) {
+            console.log(`DB:Truncate table [${tableName}] does not exist`);
+            return false;
+        }
+
+        let items = await this.scan(tableName, filter, parameters, index, false);
+        if (items) {
+            console.log(`DB:Truncate - deleting ${items.length} items from table [${tableName}] - ${new Date()}`);
+
+            const tableDescription = await this.describeTable(tableName);
+            if (!tableDescription) {
+                console.log(`DB:Truncate - table [${tableName}] does not exist`);
+                return false;
+            } else {
+                console.log(
+                    `DB:Truncate - Description table [${tableName}] retrieved: ${JSON.stringify(tableDescription)}`
+                );
+            }
+
+            for (let i = 0; i < items.length; i++) {
+                const key = {};
+                key[tableDescription.keySchema.partitionKey] = items[i][tableDescription.keySchema.partitionKey];
+                if (tableDescription.keySchema.sortKey) {
+                    key[tableDescription.keySchema.sortKey] = items[i][tableDescription.keySchema.sortKey];
+                }
+                await this.delete(tableName, key);
+                if (i % 100 == 0) {
+                    console.log(`DB:Truncate - deleted ${i} items - ${new Date()}`);
+                } else if (i == items.length - 1) {
+                    console.log(`DB:Truncate - deleted ${i} items - ${new Date()}`);
+                }
+            }
+        }
+        return true;
     }
 
     //#endregion
