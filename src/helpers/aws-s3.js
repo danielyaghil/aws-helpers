@@ -12,10 +12,12 @@ const AWSBase = require('./aws-base');
 class AWSS3 extends AWSBase {
     constructor(region) {
         super(S3Client, region);
+        if (mime.getType('x.ipa') != 'application/octet-stream') {
+            mime.define({ 'application/octet-stream': ['ipa'] });
+        }
     }
 
     static instance(region) {
-        mime.define({ 'application/octet-stream': ['ipa'] });
         return super.instance(AWSS3, region);
     }
 
