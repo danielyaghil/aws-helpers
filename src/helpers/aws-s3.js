@@ -15,6 +15,7 @@ class AWSS3 extends AWSBase {
     }
 
     static instance(region) {
+        mime.define({ 'application/octet-stream': ['ipa'] });
         return super.instance(AWSS3, region);
     }
 
@@ -132,6 +133,14 @@ class AWSS3 extends AWSBase {
         } while (!completed && results.length < maxKeys);
 
         return results;
+    }
+
+    async filterError(error) {
+        if (error.code == 'NoSuchBucket') {
+            return false;
+        }
+
+        return super.filterError(error);
     }
 }
 
