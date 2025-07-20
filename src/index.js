@@ -7,6 +7,7 @@ const AWSSns = require('./helpers/aws-sns');
 const AWSSqs = require('./helpers/aws-sqs');
 const AWSDeviceFarm = require('./helpers/aws-device-farm');
 const AWSEcs = require('./helpers/aws-ecs');
+const AWSElasticLoadBalancingV2 = require('./helpers/aws-elvb2');
 
 module.exports.SecretsClient = AWSSecrets;
 module.exports.S3Client = AWSS3;
@@ -16,3 +17,4 @@ module.exports.SnsClient = AWSSns;
 module.exports.SqsClient = AWSSqs;
 module.exports.DeviceFarmClient = AWSDeviceFarm;
 module.exports.EcsClient = AWSEcs;
+module.exports.Elbv2Client = AWSElasticLoadBalancingV2;
