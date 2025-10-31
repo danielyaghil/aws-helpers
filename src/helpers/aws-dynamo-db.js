@@ -326,7 +326,7 @@ class DB {
 
     //#region queries
 
-    async query(tableName, keyCondition, filter = null, parameters, sort = 'asc', index = null, firstPageOnly = false) {
+    async query(tableName, keyCondition, filter = null, parameters, sort = 'asc', index = null, maxItems = 0) {
         if (!tableName) {
             console.log(`DB:Query - missing tableName`);
             return null;
@@ -366,7 +366,7 @@ class DB {
             params.ConsistentRead = true;
         }
 
-        let completedScan = firstPageOnly;
+        let completedScan = maxItems == 0;
         let queriedItems = [];
         let totalConsumedCapacity = 0;
         do {
@@ -383,6 +383,10 @@ class DB {
 
             if (result.data.LastEvaluatedKey) {
                 params.ExclusiveStartKey = result.data.LastEvaluatedKey;
+                if (maxItems > 0 && queriedItems.length >= maxItems) {
+                    completedScan = true;
+                    queriedItems = queriedItems.slice(0, maxItems);
+                }
             } else {
                 completedScan = true;
             }
@@ -399,7 +403,7 @@ class DB {
         return queriedItems;
     }
 
-    async scan(tableName, filter = null, parameters = null, index = null, firstPageOnly = false) {
+    async scan(tableName, filter = null, parameters = null, index = null, maxItems = 0) {
         if (!tableName) {
             console.log(`DB:Scan - missing tableName`);
             return null;
@@ -425,7 +429,7 @@ class DB {
             params.ConsistentRead = true;
         }
 
-        let completedScan = firstPageOnly;
+        let completedScan = maxItems == 0;
         let scannedItems = [];
         let totalConsumedCapacity = 0;
         do {
@@ -442,6 +446,10 @@ class DB {
 
             if (result.data.LastEvaluatedKey) {
                 params.ExclusiveStartKey = result.data.LastEvaluatedKey;
+                if (maxItems > 0 && scannedItems.length >= maxItems) {
+                    completedScan = true;
+                    scannedItems = scannedItems.slice(0, maxItems);
+                }
             } else {
                 completedScan = true;
             }
@@ -458,14 +466,7 @@ class DB {
         return scannedItems;
     }
 
-    async executeStatement(
-        tableName,
-        filter,
-        index = null,
-        sortBy = null,
-        sortDirection = 'asc',
-        firstPageOnly = false
-    ) {
+    async executeStatement(tableName, filter, index = null, sortBy = null, sortDirection = 'asc', maxItems = 0) {
         if (!tableName || !filter) {
             console.log(`DB:executeStatement - missing tableName or filter`);
             return null;
@@ -486,7 +487,7 @@ class DB {
             params.ConsistentRead = true;
         }
 
-        let completedScan = firstPageOnly;
+        let completedScan = maxItems == 0;
         let selectedItems = [];
         let totalConsumedCapacity = 0;
         do {
@@ -503,6 +504,10 @@ class DB {
 
             if (result.data.NextToken) {
                 params.NextToken = result.data.NextToken;
+                if (maxItems > 0 && selectedItems.length >= maxItems) {
+                    completedScan = true;
+                    selectedItems = selectedItems.slice(0, maxItems);
+                }
             } else {
                 completedScan = true;
             }

@@ -135,7 +135,7 @@ To query a Dynamo DB table, you need to call the "query" method with the table n
 Method Signature:
 
 ```javascript
-async query(tableName, keyCondition, filter = null, parameters, sort = 'asc', index = null, firstPageOnly = false)
+async query(tableName, keyCondition, filter = null, parameters, sort = 'asc', index = null, maxItems = 0)
 ```
 
 The parameters are defined as below:
@@ -146,7 +146,7 @@ The parameters are defined as below:
 - parameters: it is an object that includes the values of all the element defined either in keyCondition or additional filter (e.g. { ':pk': '123', ':sk': 'abc', ':age': 30 }).
 - sort: an optional parameter that defines the sort order of the results bad on sort key. It can be either "asc" or "desc". Default is "asc".
 - index: an optional name of the index to query (if not provided, the query will be performed on the table itself). Default is null.
-- firstPageOnly: an optional boolean parameter that indicates if the query should return only the first page of results or all the results. Default is false and the result are all possible objects matching the query.
+- maxItems: an optional parameter that defines the maximum number of items to return. Default is 0, which means no limit.
 
 It returns:
 
@@ -172,7 +172,7 @@ If called solely with the table name, it will return all the items in the table.
 Method Signature:
 
 ```javascript
-async scan(tableName, filter = null, parameters = null, index = null, firstPageOnly = false) {
+async scan(tableName, filter = null, parameters = null, index = null, maxItems = 0) {
 ```
 
 The parameters are defined as below:
@@ -181,7 +181,7 @@ The parameters are defined as below:
 - filter: an optional condition expression that is used to filter the results (e.g. "age > :age"). Default is null.
 - parameters: it is an object that includes the values of all the element defined in the filter (e.g. { ':age': 30 }).
 - index: an optional name of the index to scan (if not provided, the scan will be performed on the table itself). Default is null.
-- firstPageOnly: an optional boolean parameter that indicates if the query should return only the first page of results or all the results. efault is false and the result are all possible objects matching the query.
+- maxItems: an optional parameter that defines the maximum number of items to return. Default is 0, which means no limit.
 
 It returns:
 
@@ -204,7 +204,7 @@ To execute an "SQL" style query, you need to call the "execute" method with the 
 Method signature:
 
 ```javascript
-async executeStatement(tableName, filter, index = null, sortBy = null, sortDirection = 'asc')
+async executeStatement(tableName, filter, index = null, sortBy = null, sortDirection = 'asc', maxItems = 0)
 ```
 
 The parameters are defined as below:
@@ -214,7 +214,7 @@ The parameters are defined as below:
 - index: an optional name of the index to scan (if not provided, the scan will be performed on the table itself). Default is null.
 - sortBy: an optional name of the attribute to sort the results by. Default is null. if specified, it musts be a property part of the table's key or th us index key.
 - sortDirection: an optional parameter that defines the sort order of the results. It can be either "asc" or "desc". Default is "asc".
-- firstPageOnly: an optional boolean parameter that indicates if the query should return only the first page of results or all the results. efault is false and the result are all possible objects matching the query.
+- maxItems: an optional parameter that defines the maximum number of items to return. Default is 0, which means no limit.
 
 It returns:
 
