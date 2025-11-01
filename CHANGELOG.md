@@ -1,6 +1,6 @@
 # Changelog
 
-## 0.9.80 (2025-11-1)
+## 0.9.81 (2025-11-1)
 
 - Breaking change in DynamoDbClient: for all queries (query, scan, executeStatement), the default behavior is changed to return all results by paginating through all pages.  
   If you want to limit the results to a specific number, you can now use the new parameter "maxItems" to set the maximum number of items to return.  
