@@ -366,7 +366,7 @@ class DB {
             params.ConsistentRead = true;
         }
 
-        let completedScan = maxItems == 0;
+        let completedScan = false;
         let queriedItems = [];
         let totalConsumedCapacity = 0;
         do {
@@ -429,7 +429,7 @@ class DB {
             params.ConsistentRead = true;
         }
 
-        let completedScan = maxItems == 0;
+        let completedScan = false;
         let scannedItems = [];
         let totalConsumedCapacity = 0;
         do {
@@ -487,7 +487,7 @@ class DB {
             params.ConsistentRead = true;
         }
 
-        let completedScan = maxItems == 0;
+        let completedScan = false;
         let selectedItems = [];
         let totalConsumedCapacity = 0;
         do {
